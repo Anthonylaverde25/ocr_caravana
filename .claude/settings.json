@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npx jest:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc --noEmit:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ipconfig getifaddr:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(npx expo prebuild:*)",
+      "Bash(npx expo install:*)",
+      "Bash(npm install:*)",
+      "Edit(./ios/**)",
+      "Edit(./android/**)"
+    ],
+    "deny": [
+      "Read(./.env.local)"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "code": "trutest_like",
+  "displayName": "Tipo Tru-Test (simulado)",
+  "simulated": true,
+  "advertisedName": "SIM-TRU",
+  "serviceUuid": "a4b86ca7-6dba-49b6-90d7-5d9830cc0d2e",
+  "notifyCharacteristicUuid": "8a5c6aa6-2b79-4247-980e-60ff25abe61d",
+  "lineTerminator": "\r\n",
+  "chunkSize": 20,
+  "lineTemplate": "{datetime},{eid}",
+  "linePattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},(?<country>\\d{3})(?<national>\\d{12})$"
+}

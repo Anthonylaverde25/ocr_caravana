@@ -1,5 +1,8 @@
 import { StyleSheet } from "react-native";
 
+export const FOCUS_WIDTH = 330;
+export const FOCUS_HEIGHT = 500;
+
 export const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "black" },
   cameraPreview: { ...StyleSheet.absoluteFillObject },
@@ -9,8 +12,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   focusFrame: {
-    width: 330,
-    height: 500,
+    width: FOCUS_WIDTH,
+    height: FOCUS_HEIGHT,
     borderWidth: 2,
     borderColor: "#007AFF",
     borderRadius: 16,

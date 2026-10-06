@@ -16,7 +16,12 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.anthonylaverde.mobilescanner",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app needs access to the camera to scan animal identification tags (caravanas)."
+        "NSCameraUsageDescription": "This app needs access to the camera to scan animal identification tags (caravanas).",
+        "NSBluetoothAlwaysUsageDescription": "La app usa Bluetooth para recibir las caravanas que lee el bastón lector en la manga.",
+        "NSLocalNetworkUsageDescription": "La app se conecta al servidor de desarrollo en la red local.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
       }
     },
     "android": {
@@ -40,6 +45,24 @@
         {
           "cameraPermissionText": "CaravanaScanner needs access to your Camera to scan tags.",
           "enableMicrophonePermission": false
+        }
+      ],
+      [
+        "react-native-ble-plx",
+        {
+          "isBackgroundEnabled": false,
+          "modes": [],
+          "neverForLocation": true,
+          "bluetoothAlwaysPermission": "La app usa Bluetooth para recibir las caravanas que lee el bastón lector en la manga."
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ]

@@ -1,0 +1,12 @@
+{
+  "code": "allflex_like",
+  "displayName": "Tipo Allflex (simulado)",
+  "simulated": true,
+  "advertisedName": "SIM-ALX",
+  "serviceUuid": "f2685295-585b-4a66-98d7-a216626fea05",
+  "notifyCharacteristicUuid": "316bd29b-29c1-47b1-9564-97a1d309e58e",
+  "lineTerminator": "\r",
+  "chunkSize": 20,
+  "lineTemplate": "LA {country} {national}",
+  "linePattern": "^LA (?<country>\\d{3}) (?<national>\\d{12})$"
+}

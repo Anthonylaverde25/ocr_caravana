@@ -1,0 +1,12 @@
+{
+  "code": "gallagher_like",
+  "displayName": "Tipo Gallagher (simulado)",
+  "simulated": true,
+  "advertisedName": "SIM-GAL",
+  "serviceUuid": "c78d28fe-81f1-48d1-921a-12781c23cf52",
+  "notifyCharacteristicUuid": "4684bcf5-2aaa-480a-bdbc-d75f9b3e00eb",
+  "lineTerminator": "\r\n",
+  "chunkSize": 20,
+  "lineTemplate": "{eid}",
+  "linePattern": "^(?<country>\\d{3})(?<national>\\d{12})$"
+}
