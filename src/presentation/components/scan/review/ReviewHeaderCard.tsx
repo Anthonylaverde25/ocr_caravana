@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import type { SheetModule, SheetValues } from '../../../../core/work-templates/sheet/types';
 import type { ReviewIssue } from '../../../../core/work-templates/sheet/feedback';
 
@@ -34,7 +34,7 @@ export function ReviewHeaderCard({ module, header, errors, locked, onChange }: R
               editable={!locked}
               onChangeText={(value) => onChange(field.key, field.upper ? value.toUpperCase() : value)}
               placeholder={field.kind === 'date' ? 'AAAA-MM-DD' : field.placeholder}
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.subtle}
               keyboardType={field.kind === 'number' ? 'decimal-pad' : 'default'}
               autoCapitalize={field.upper ? 'characters' : 'sentences'}
             />
@@ -47,13 +47,13 @@ export function ReviewHeaderCard({ module, header, errors, locked, onChange }: R
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.surface, borderRadius: 12, padding: 14, gap: 10, borderWidth: 1, borderColor: colors.border },
+  card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: 14, gap: 10, borderWidth: 1, borderColor: colors.border },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  code: { fontSize: 12, fontWeight: '800', color: colors.primaryDark, backgroundColor: colors.primaryBg, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
-  title: { fontSize: 15, fontWeight: '700', color: colors.text, flexShrink: 1 },
+  code: { fontSize: 12, fontFamily: fonts.semibold, color: colors.primaryDark, backgroundColor: colors.primaryBg, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.sm },
+  title: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text, flexShrink: 1 },
   field: { gap: 4 },
-  label: { fontSize: 11, fontWeight: '700', color: colors.muted, textTransform: 'uppercase' },
-  input: { backgroundColor: colors.background, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 9, fontSize: 15, color: colors.text },
+  label: { fontSize: 11, fontFamily: fonts.semibold, color: colors.muted },
+  input: { backgroundColor: colors.background, borderRadius: radius.md, paddingHorizontal: 12, paddingVertical: 9, fontFamily: fonts.regular, fontSize: 15, color: colors.text },
   inputError: { borderWidth: 1, borderColor: colors.danger },
-  error: { fontSize: 12, color: colors.danger },
+  error: { fontFamily: fonts.regular, fontSize: 12, color: colors.danger },
 });

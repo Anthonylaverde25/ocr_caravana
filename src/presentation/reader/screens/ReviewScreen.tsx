@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { CheckCheck, Plus, RefreshCw, ScanLine } from 'lucide-react-native';
 import * as S from '../../../core/entities/RegistrationSession';
+import { AppHeader } from '../../components/AppHeader';
+import { PillButton } from '../../components/ui/PillButton';
+import { StatsCard } from '../../components/ui/StatsCard';
+import { ActionBar } from '../../components/ui/ActionBar';
 import { ReviewRow } from '../components/ReviewRow';
 import { SubmitFeedback, useReader } from '../ReaderContext';
 import { ReaderStackParams } from '../ReaderTab';
-import { colors, common } from '../theme';
+import { colors, common, fonts, radius } from '../theme';
 
 type Props = NativeStackScreenProps<ReaderStackParams, 'Review'>;
 
 const TONE = {
-  success: { color: colors.success, bg: colors.successBg },
-  warning: { color: colors.warning, bg: colors.warningBg },
+  success: { color: colors.primary, bg: colors.successBg },
+  warning: { color: colors.warningText, bg: colors.warningBg },
   error: { color: colors.danger, bg: colors.dangerBg },
 };
 
@@ -22,13 +27,19 @@ export function ReviewScreen({ navigation }: Props) {
   const [busy, setBusy] = useState(false);
 
   if (!session) {
-    return <View style={[common.screen, common.content]}><Text style={common.muted}>No hay sesión abierta.</Text></View>;
+    return (
+      <View style={common.screen}>
+        <AppHeader title="Revisión" onBack={() => navigation.goBack()} />
+        <Text style={[common.muted, styles.empty]}>No hay sesión abierta.</Text>
+      </View>
+    );
   }
 
   const items = S.reviewItems(session);
   const blockers = S.submissionBlockers(session);
   const editable = S.isEditable(session);
   const toRegister = items.filter((i) => i.willRegister).length;
+  const unchecked = S.uncheckedEids(session).length;
   const done = session.status === 'submitted';
 
   const send = async () => {
@@ -38,27 +49,37 @@ export function ReviewScreen({ navigation }: Props) {
   };
 
   const header = (
-    <View style={{ gap: 12 }}>
-      <View style={common.card}>
-        <Text style={common.label}>Resumen</Text>
-        <Text style={common.body}>{toRegister} nuevos para dar de alta en {session.header.batchName}</Text>
-        <Text style={common.muted}>{items.length - toRegister} excluidos (ya registrados, de otra empresa o sin verificar)</Text>
-      </View>
+    <View style={styles.listHeader}>
+      <StatsCard
+        eyebrow={done ? 'Alta registrada' : 'Para dar de alta'}
+        value={toRegister}
+        unit={toRegister === 1 ? 'animal nuevo' : 'animales nuevos'}
+        stats={[
+          { label: 'leídos', value: items.length },
+          { label: 'excluidos', value: items.length - toRegister, alert: items.length - toRegister > 0 },
+        ]}
+        footer={`Destino: ${session.header.batchName}. Se excluyen los ya registrados, los de otra empresa y los sin verificar.`}
+      />
       {feedback && (
-        <View style={[common.card, { backgroundColor: TONE[feedback.tone].bg }]}>
-          <Text style={{ color: TONE[feedback.tone].color, fontWeight: '600' }}>{feedback.message}</Text>
+        <View style={[styles.banner, { backgroundColor: TONE[feedback.tone].bg }]}>
+          <Text style={[styles.bannerText, { color: TONE[feedback.tone].color }]}>{feedback.message}</Text>
         </View>
       )}
       {!done && blockers.length > 0 && (
-        <View style={[common.card, { backgroundColor: colors.dangerBg }]}>
-          {blockers.map((b) => <Text key={b} style={{ color: colors.danger }}>• {b}</Text>)}
+        <View style={[styles.banner, { backgroundColor: colors.dangerBg }]}>
+          {blockers.map((b) => (
+            <Text key={b} style={[styles.bannerText, { color: colors.danger }]}>• {b}</Text>
+          ))}
         </View>
       )}
+      <Text style={styles.sectionTitle}>Caravanas leídas</Text>
     </View>
   );
 
   return (
     <View style={common.screen}>
+      <AppHeader title="Revisión" subtitle={session.header.batchName} onBack={() => navigation.goBack()} />
+
       <FlatList
         data={items}
         keyExtractor={(i) => i.eid}
@@ -74,41 +95,49 @@ export function ReviewScreen({ navigation }: Props) {
         )}
       />
 
-      <View style={{ padding: 16, gap: 8 }}>
+      <ActionBar>
         {done ? (
-          <TouchableOpacity style={common.button} onPress={() => { closeSession(); navigation.popToTop(); }}>
-            <Text style={common.buttonText}>Nueva sesión</Text>
-          </TouchableOpacity>
+          <PillButton label="Nueva sesión" icon={Plus} onPress={() => { closeSession(); navigation.popToTop(); }} />
         ) : (
           <>
-            {!online && <Text style={[common.muted, { textAlign: 'center' }]}>Sin conexión con el sistema</Text>}
-            {S.uncheckedEids(session).length > 0 && (
-              <TouchableOpacity style={[common.button, common.buttonSecondary]} onPress={() => void verify()}>
-                <Text style={[common.buttonText, common.buttonSecondaryText]}>Verificar ahora</Text>
-              </TouchableOpacity>
+            {!online && <Text style={[common.muted, styles.center]}>Sin conexión con el sistema</Text>}
+            {(unchecked > 0 || editable) && (
+              <View style={styles.secondaryRow}>
+                {unchecked > 0 && (
+                  <PillButton label="Verificar" icon={RefreshCw} variant="soft" style={styles.flex} onPress={() => void verify()} />
+                )}
+                {editable && (
+                  <PillButton
+                    label="Seguir leyendo"
+                    icon={ScanLine}
+                    variant="soft"
+                    style={styles.flex}
+                    onPress={() => { update((s) => S.setStatus(s, 'open')); navigation.navigate('Live'); }}
+                  />
+                )}
+              </View>
             )}
-            {editable && (
-              <TouchableOpacity
-                style={[common.button, common.buttonSecondary]}
-                onPress={() => { update((s) => S.setStatus(s, 'open')); navigation.navigate('Live'); }}
-              >
-                <Text style={[common.buttonText, common.buttonSecondaryText]}>Seguir leyendo</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={[common.button, (busy || (editable && blockers.length > 0)) && common.buttonDisabled]}
-              disabled={busy || (editable && blockers.length > 0)}
+            <PillButton
+              label={session.submissionPending ? 'Reintentar envío' : `Dar de alta ${toRegister} animales`}
+              icon={CheckCheck}
+              loading={busy}
+              disabled={editable && blockers.length > 0}
               onPress={send}
-            >
-              {busy ? <ActivityIndicator color="white" /> : (
-                <Text style={common.buttonText}>
-                  {session.submissionPending ? 'Reintentar envío' : `Dar de alta ${toRegister} animales`}
-                </Text>
-              )}
-            </TouchableOpacity>
+            />
           </>
         )}
-      </View>
+      </ActionBar>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  listHeader: { gap: 12 },
+  banner: { borderRadius: radius.md, padding: 14, gap: 4 },
+  bannerText: { fontFamily: fonts.medium, fontSize: 14 },
+  sectionTitle: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text, marginTop: 4 },
+  secondaryRow: { flexDirection: 'row', gap: 10 },
+  flex: { flex: 1, paddingHorizontal: 12 },
+  center: { textAlign: 'center' },
+  empty: { textAlign: 'center', marginTop: 32 },
+});

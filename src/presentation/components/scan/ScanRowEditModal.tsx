@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { X, Check } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 import { WorkTemplateScanRow, WorkTemplateCode } from '../../../core/work-templates/types';
 
 interface ScanRowEditModalProps {
@@ -94,7 +94,7 @@ export function ScanRowEditModal({
               value={caravana}
               onChangeText={setCaravana}
               placeholder="Ej. 085401928374615"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.subtle}
               keyboardType="numeric"
               autoCapitalize="none"
             />
@@ -107,7 +107,7 @@ export function ScanRowEditModal({
               value={category}
               onChangeText={setCategory}
               placeholder="Ej. Novillito, Vaquillona, Ternero"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.subtle}
             />
           </View>
 
@@ -140,7 +140,7 @@ export function ScanRowEditModal({
               value={breed}
               onChangeText={setBreed}
               placeholder="Ej. Angus Colorado, Braford"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.subtle}
             />
           </View>
 
@@ -152,7 +152,7 @@ export function ScanRowEditModal({
                 value={ceCm}
                 onChangeText={setCeCm}
                 placeholder="Ej. 38.5"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={colors.subtle}
                 keyboardType="decimal-pad"
               />
             </View>
@@ -164,7 +164,7 @@ export function ScanRowEditModal({
                 value={weight}
                 onChangeText={setWeight}
                 placeholder="Ej. 340.5"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={colors.subtle}
                 keyboardType="decimal-pad"
               />
             </View>
@@ -177,7 +177,7 @@ export function ScanRowEditModal({
               value={observations}
               onChangeText={setObservations}
               placeholder="Detalles sanitarios, aplomos, marcas..."
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.subtle}
               multiline
               numberOfLines={3}
             />
@@ -190,7 +190,7 @@ export function ScanRowEditModal({
             onPress={handleConfirm}
             disabled={!caravana.trim()}
           >
-            <Check size={18} color="#FFFFFF" />
+            <Check size={18} color={colors.surface} />
             <Text style={styles.saveBtnText}>Guardar Animal</Text>
           </TouchableOpacity>
         </View>
@@ -202,7 +202,7 @@ export function ScanRowEditModal({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
   },
   header: {
     flexDirection: 'row',
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
     color: colors.text,
   },
   closeBtn: {
@@ -230,19 +230,17 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#4B5563',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontFamily: fonts.semibold,
+    color: colors.textSecondary,
   },
   input: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.surfaceMuted,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 8,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 15,
+    fontFamily: fonts.regular, fontSize: 15,
     color: colors.text,
   },
   textArea: {
@@ -256,10 +254,10 @@ const styles = StyleSheet.create({
   sexBtn: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceMuted,
     alignItems: 'center',
   },
   sexBtnActive: {
@@ -268,12 +266,12 @@ const styles = StyleSheet.create({
   },
   sexBtnText: {
     fontSize: 14,
-    color: '#4B5563',
-    fontWeight: '600',
+    color: colors.textSecondary,
+    fontFamily: fonts.medium,
   },
   sexBtnTextActive: {
     color: colors.primaryDark,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   footer: {
     padding: 20,
@@ -286,15 +284,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.primary,
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: radius.md,
     gap: 8,
   },
   saveBtnDisabled: {
     opacity: 0.5,
   },
   saveBtnText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
 });

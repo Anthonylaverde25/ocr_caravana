@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobile-scanner",
+    "name": "RXNA Ganadero",
     "slug": "mobile-scanner",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#064E3B"
     },
     "ios": {
       "supportsTablet": true,
@@ -28,7 +28,7 @@
       "package": "com.anthonylaverde.mobilescanner",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#064E3B"
       },
       "permissions": [
         "android.permission.CAMERA"
@@ -64,7 +64,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

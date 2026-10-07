@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { RotateCcw, WifiOff } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import { errorCount } from '../../../../core/work-templates/sheet/feedback';
 import type { SheetModule, SheetRow } from '../../../../core/work-templates/sheet/types';
 import type { SheetReview as SheetReviewState } from '../../../scan/useSheetReview';
@@ -89,7 +89,7 @@ export function SheetReview({ module, review, addingPage, pageError, onAddPageFr
           onAddFromGallery={onAddPageFromGallery}
         />
 
-        <Text style={styles.section}>RENGLONES ({review.rows.length})</Text>
+        <Text style={styles.section}>Renglones ({review.rows.length})</Text>
         {review.rows.map((row, index) => (
           <ReviewRowCard
             key={row.id}
@@ -128,10 +128,10 @@ const styles = StyleSheet.create({
   wrap: { flex: 1 },
   content: { padding: 16, gap: 12, paddingBottom: 28 },
   topRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  hint: { flex: 1, fontSize: 12, color: colors.muted },
+  hint: { flex: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.muted },
   discard: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  discardText: { fontSize: 12, color: colors.muted, fontWeight: '600' },
-  network: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: colors.dangerBg, padding: 10, borderRadius: 8 },
-  networkText: { flex: 1, fontSize: 12, color: '#B91C1C' },
-  section: { fontSize: 11, fontWeight: '700', color: '#6B7280', letterSpacing: 0.6, marginTop: 4 },
+  discardText: { fontSize: 12, color: colors.muted, fontFamily: fonts.medium },
+  network: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: colors.dangerBg, padding: 10, borderRadius: radius.md },
+  networkText: { flex: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.danger },
+  section: { fontSize: 16, fontFamily: fonts.semibold, color: colors.text, marginTop: 4 },
 });

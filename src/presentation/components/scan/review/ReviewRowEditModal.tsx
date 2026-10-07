@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { X, Check } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import type { SheetModule, SheetRow, SheetValues } from '../../../../core/work-templates/sheet/types';
 
 interface ReviewRowEditModalProps {
@@ -52,7 +52,7 @@ export function ReviewRowEditModal({ module, row, onSave, onClose }: ReviewRowEd
                   value={values[field.key] ?? ''}
                   onChangeText={(value) => set(field.key, field.upper ? value.toUpperCase() : value)}
                   placeholder={field.kind === 'date' ? 'AAAA-MM-DD' : field.placeholder}
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={colors.subtle}
                   keyboardType={field.kind === 'number' ? 'decimal-pad' : 'default'}
                   autoCapitalize={field.upper ? 'characters' : 'sentences'}
                 />
@@ -67,7 +67,7 @@ export function ReviewRowEditModal({ module, row, onSave, onClose }: ReviewRowEd
             onClose();
           }}
         >
-          <Check size={18} color="#FFFFFF" />
+          <Check size={18} color={colors.surface} />
           <Text style={styles.saveText}>Guardar renglón</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -78,16 +78,16 @@ export function ReviewRowEditModal({ module, row, onSave, onClose }: ReviewRowEd
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.surface },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: colors.border },
-  title: { fontSize: 17, fontWeight: '700', color: colors.text },
+  title: { fontSize: 17, fontFamily: fonts.semibold, color: colors.text },
   content: { padding: 16, gap: 14 },
   field: { gap: 6 },
-  label: { fontSize: 11, fontWeight: '700', color: colors.muted, textTransform: 'uppercase' },
-  input: { backgroundColor: colors.background, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16, color: colors.text },
+  label: { fontSize: 11, fontFamily: fonts.semibold, color: colors.muted },
+  input: { backgroundColor: colors.background, borderRadius: radius.md, paddingHorizontal: 12, paddingVertical: 10, fontFamily: fonts.regular, fontSize: 16, color: colors.text },
   choices: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
-  choice: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: colors.background },
+  choice: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.background },
   choiceActive: { backgroundColor: colors.primary },
-  choiceText: { fontSize: 14, color: colors.text },
-  choiceTextActive: { color: '#FFFFFF', fontWeight: '600' },
-  save: { margin: 16, flexDirection: 'row', gap: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary, borderRadius: 10, paddingVertical: 14 },
-  saveText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  choiceText: { fontFamily: fonts.regular, fontSize: 14, color: colors.text },
+  choiceTextActive: { color: colors.surface, fontFamily: fonts.medium },
+  save: { margin: 16, flexDirection: 'row', gap: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 14 },
+  saveText: { color: colors.surface, fontSize: 16, fontFamily: fonts.medium },
 });

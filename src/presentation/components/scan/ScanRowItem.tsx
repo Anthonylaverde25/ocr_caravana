@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Edit2, Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 import { WorkTemplateScanRow } from '../../../core/work-templates/types';
 
 interface ScanRowItemProps {
@@ -32,9 +32,9 @@ export function ScanRowItem({ row, index, onEdit, onDelete }: ScanRowItemProps) 
             ]}
           >
             {isLowConfidence ? (
-              <AlertTriangle size={11} color="#B45309" />
+              <AlertTriangle size={11} color={colors.warningText} />
             ) : (
-              <CheckCircle2 size={11} color="#047857" />
+              <CheckCircle2 size={11} color={colors.primary} />
             )}
             <Text
               style={[
@@ -47,7 +47,7 @@ export function ScanRowItem({ row, index, onEdit, onDelete }: ScanRowItemProps) 
           </View>
 
           <TouchableOpacity style={styles.iconBtn} onPress={onEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Edit2 size={15} color="#4B5563" />
+            <Edit2 size={15} color={colors.textSecondary} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.iconBtn} onPress={onDelete} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
@@ -59,7 +59,7 @@ export function ScanRowItem({ row, index, onEdit, onDelete }: ScanRowItemProps) 
       {/* Warning message if any */}
       {row.warningMessage && (
         <View style={styles.warningBox}>
-          <AlertTriangle size={12} color="#B45309" />
+          <AlertTriangle size={12} color={colors.warningText} />
           <Text style={styles.warningMessageText}>{row.warningMessage}</Text>
         </View>
       )}
@@ -114,16 +114,16 @@ export function ScanRowItem({ row, index, onEdit, onDelete }: ScanRowItemProps) 
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     gap: 8,
   },
   cardWarning: {
-    borderColor: '#FCD34D',
-    backgroundColor: '#FFFDF5',
+    borderColor: colors.warning,
+    backgroundColor: colors.warningBg,
   },
   topRow: {
     flexDirection: 'row',
@@ -137,14 +137,13 @@ const styles = StyleSheet.create({
   },
   indexNum: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#9CA3AF',
+    fontFamily: fonts.semibold,
+    color: colors.subtle,
   },
   caravanaText: {
     fontSize: 15,
-    fontWeight: '800',
-    color: '#111827',
-    fontFamily: 'monospace',
+    fontFamily: fonts.semibold,
+    color: colors.text, fontVariant: ['tabular-nums'],
   },
   badgesWrap: {
     flexDirection: 'row',
@@ -160,20 +159,20 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   confidenceHigh: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.primaryBg,
   },
   confidenceLow: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningBg,
   },
   confidenceText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   confidenceTextHigh: {
-    color: '#047857',
+    color: colors.primary,
   },
   confidenceTextLow: {
-    color: '#B45309',
+    color: colors.warningText,
   },
   iconBtn: {
     padding: 4,
@@ -181,15 +180,15 @@ const styles = StyleSheet.create({
   warningBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningBg,
     padding: 6,
-    borderRadius: 6,
+    borderRadius: radius.sm,
     gap: 6,
   },
   warningMessageText: {
     fontSize: 11,
-    color: '#92400E',
-    fontWeight: '600',
+    color: colors.warningText,
+    fontFamily: fonts.medium,
   },
   detailsRow: {
     flexDirection: 'row',
@@ -197,48 +196,48 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tagBadge: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.surfaceMuted,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: radius.sm,
   },
   tagText: {
     fontSize: 11,
-    color: '#4B5563',
-    fontWeight: '600',
+    color: colors.textSecondary,
+    fontFamily: fonts.medium,
   },
   weightBadge: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.primaryBg,
     borderWidth: 1,
-    borderColor: '#A7F3D0',
+    borderColor: colors.emeraldBorder,
   },
   weightText: {
     fontSize: 11,
-    color: '#047857',
-    fontWeight: '700',
+    color: colors.primary,
+    fontFamily: fonts.semibold,
   },
   ceBadge: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.infoBg,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: colors.infoBg,
   },
   ceText: {
     fontSize: 11,
-    color: '#1D4ED8',
-    fontWeight: '700',
+    color: colors.info,
+    fontFamily: fonts.semibold,
   },
   verdictGood: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.primaryBg,
   },
   verdictBad: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerBg,
   },
   verdictText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   obsText: {
-    fontSize: 11,
+    fontFamily: fonts.regular, fontSize: 11,
     color: colors.muted,
     fontStyle: 'italic',
   },

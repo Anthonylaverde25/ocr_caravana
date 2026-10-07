@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Minus, Plus, Trash2 } from 'lucide-react-native';
 import { AnimalOverrides, ReviewItem, Sex } from '../../../core/entities/RegistrationSession';
-import { colors, common, formatEid } from '../theme';
+import { colors, common, fonts, formatEid, radius } from '../theme';
 import { ChipGroup } from './ChipGroup';
 import { StatusChip } from './StatusChip';
 
@@ -66,7 +66,7 @@ export function ReviewRow({ item, editable, onChange, onRemove }: Props) {
       {editable && (
         <TouchableOpacity style={[common.row, styles.remove]} onPress={onRemove}>
           <Trash2 size={14} color={colors.danger} />
-          <Text style={{ color: colors.danger, fontSize: 13 }}>Quitar lectura</Text>
+          <Text style={styles.removeText}>Quitar lectura</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -89,11 +89,15 @@ function Stepper({ value, onChange, disabled }: { value: number; onChange(v: num
 }
 
 const styles = StyleSheet.create({
-  eid: { fontSize: 17, fontWeight: '700', color: colors.text, fontVariant: ['tabular-nums'] },
+  eid: { fontFamily: fonts.semibold, fontSize: 18, color: colors.text, fontVariant: ['tabular-nums'] },
   flagged: { borderWidth: 1.5, borderColor: colors.danger },
   excluded: { opacity: 0.6 },
-  issue: { fontSize: 13, color: colors.danger },
-  weight: { width: 80, paddingVertical: 6, textAlign: 'right' },
-  step: { padding: 6, borderRadius: 6, backgroundColor: colors.background },
-  remove: { alignSelf: 'flex-end' },
+  issue: { fontFamily: fonts.regular, fontSize: 13, color: colors.danger },
+  weight: { width: 84, paddingVertical: 8, textAlign: 'right' },
+  step: {
+    width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: colors.primaryBg,
+  },
+  remove: { alignSelf: 'flex-end', paddingVertical: 4, paddingHorizontal: 10, borderRadius: radius.pill },
+  removeText: { fontFamily: fonts.medium, color: colors.danger, fontSize: 13 },
 });

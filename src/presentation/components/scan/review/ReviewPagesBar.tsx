@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Camera, Image as ImageIcon } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import type { SheetPage } from '../../../../core/work-templates/sheet/types';
 
 interface ReviewPagesBarProps {
@@ -63,12 +63,12 @@ export function ReviewPagesBar({ pages, missingPages, multiPage, busy, locked, p
 const styles = StyleSheet.create({
   wrap: { gap: 8 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  chip: { fontSize: 12, fontWeight: '700', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, overflow: 'hidden' },
+  chip: { fontSize: 12, fontFamily: fonts.semibold, paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.sm, overflow: 'hidden' },
   chipOk: { color: colors.primaryDark, backgroundColor: colors.primaryBg },
-  chipMissing: { color: '#92400E', backgroundColor: colors.warningBg },
+  chipMissing: { color: colors.warningText, backgroundColor: colors.warningBg },
   actions: { flexDirection: 'row', gap: 8 },
-  button: { flexDirection: 'row', gap: 6, alignItems: 'center', borderWidth: 1, borderColor: colors.emeraldBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
-  buttonText: { fontSize: 13, fontWeight: '600', color: colors.primaryDark },
-  note: { fontSize: 12, color: '#92400E' },
-  error: { fontSize: 12, color: colors.danger },
+  button: { flexDirection: 'row', gap: 6, alignItems: 'center', borderWidth: 1, borderColor: colors.emeraldBorder, borderRadius: radius.md, paddingHorizontal: 10, paddingVertical: 7 },
+  buttonText: { fontSize: 13, fontFamily: fonts.medium, color: colors.primaryDark },
+  note: { fontFamily: fonts.regular, fontSize: 12, color: colors.warningText },
+  error: { fontFamily: fonts.regular, fontSize: 12, color: colors.danger },
 });

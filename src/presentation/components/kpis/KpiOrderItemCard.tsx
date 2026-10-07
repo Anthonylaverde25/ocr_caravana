@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Calendar, Layers, Building2 } from 'lucide-react-native';
 import { KpiOrderItem } from '../../../infrastructure/api/OperationalKpiApi';
+import { colors, fonts, radius } from '../../reader/theme';
 
 interface KpiOrderItemCardProps {
   item: KpiOrderItem;
@@ -12,14 +13,14 @@ export function KpiOrderItemCard({ item }: KpiOrderItemCardProps) {
     switch (status) {
       case 'IN_TRANSIT':
       case 'ISSUED':
-        return { bg: '#ECFDF5', text: '#047857', border: '#A7F3D0' };
+        return { bg: colors.primaryBg, text: colors.primary, border: colors.emeraldBorder };
       case 'AWAITING_DTE':
       case 'PARTIAL':
-        return { bg: '#FFFBEB', text: '#B45309', border: '#FDE68A' };
+        return { bg: colors.warningBg, text: colors.warningText, border: colors.warningBg };
       case 'DRAFT':
-        return { bg: '#F3F4F6', text: '#4B5563', border: '#E5E7EB' };
+        return { bg: colors.surfaceMuted, text: colors.textSecondary, border: colors.border };
       default:
-        return { bg: '#EFF6FF', text: '#1D4ED8', border: '#BFDBFE' };
+        return { bg: colors.infoBg, text: colors.info, border: colors.infoBg };
     }
   };
 
@@ -54,7 +55,7 @@ export function KpiOrderItemCard({ item }: KpiOrderItemCardProps) {
 
         {item.date && (
           <View style={styles.metaRow}>
-            <Calendar size={13} color="#6B7280" />
+            <Calendar size={13} color={colors.muted} />
             <Text style={styles.metaText}>{item.date}</Text>
           </View>
         )}
@@ -65,7 +66,7 @@ export function KpiOrderItemCard({ item }: KpiOrderItemCardProps) {
         <View style={styles.orderCardFooter}>
           {(item.batch_name || item.source_batch_name) && (
             <View style={styles.detailItem}>
-              <Layers size={12} color="#6B7280" />
+              <Layers size={12} color={colors.muted} />
               <Text style={styles.detailText} numberOfLines={1}>
                 {item.batch_name || item.source_batch_name}
               </Text>
@@ -74,7 +75,7 @@ export function KpiOrderItemCard({ item }: KpiOrderItemCardProps) {
 
           {item.provider_name && (
             <View style={styles.detailItem}>
-              <Building2 size={12} color="#6B7280" />
+              <Building2 size={12} color={colors.muted} />
               <Text style={styles.detailText} numberOfLines={1}>
                 {item.provider_name}
               </Text>
@@ -100,13 +101,13 @@ export function KpiOrderItemCard({ item }: KpiOrderItemCardProps) {
 
 const styles = StyleSheet.create({
   orderCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     padding: 14,
     gap: 10,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.03,
     shadowRadius: 2,
@@ -119,19 +120,18 @@ const styles = StyleSheet.create({
   },
   orderCode: {
     fontSize: 15,
-    fontWeight: '700',
-    color: '#111827',
-    letterSpacing: 0.3,
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: radius.sm,
     borderWidth: 1,
   },
   statusBadgeText: {
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
   orderCardBody: {
     flexDirection: 'row',
@@ -144,17 +144,17 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   metaLabel: {
-    fontSize: 13,
-    color: '#6B7280',
+    fontFamily: fonts.regular, fontSize: 13,
+    color: colors.muted,
   },
   metaValueHighlight: {
     fontSize: 13,
-    fontWeight: '700',
-    color: '#111827',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   metaText: {
-    fontSize: 12,
-    color: '#6B7280',
+    fontFamily: fonts.regular, fontSize: 12,
+    color: colors.muted,
   },
   orderCardFooter: {
     flexDirection: 'row',
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
+    borderTopColor: colors.surfaceMuted,
   },
   detailItem: {
     flexDirection: 'row',
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   detailText: {
-    fontSize: 11,
-    color: '#4B5563',
+    fontFamily: fonts.regular, fontSize: 11,
+    color: colors.textSecondary,
   },
 });

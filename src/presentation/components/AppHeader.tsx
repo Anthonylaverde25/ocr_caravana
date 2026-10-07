@@ -1,22 +1,40 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bluetooth } from 'lucide-react-native';
+import { ArrowLeft, Bluetooth, BluetoothOff } from 'lucide-react-native';
 import { useReader } from '../reader/ReaderContext';
-import { colors } from '../reader/theme';
+import { colors, fonts, radius } from '../reader/theme';
 import { ErpLogo } from './ErpLogo';
+import { IconButton } from './ui/IconButton';
 
 export interface AppHeaderProps {
   title?: string;
   subtitle?: string;
   showStatus?: boolean;
   rightElement?: React.ReactNode;
+  onBack?: () => void;
+  /** "Hola, Buen día" + date instead of the title (Home). */
+  greeting?: boolean;
+  /**
+   * Square bottom edge: the screen continues the green with a HeaderBand under its first card.
+   * Otherwise the header closes with rounded corners.
+   */
+  extended?: boolean;
+}
+
+const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+// Built by hand: Intl support differs between Hermes builds.
+function formatToday(now: Date): string {
+  return `${DAYS[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+function greetingFor(now: Date): string {
+  const hour = now.getHours();
+  if (hour < 12) return 'Buen día';
+  if (hour < 20) return 'Buenas tardes';
+  return 'Buenas noches';
 }
 
 export function AppHeader({
@@ -24,6 +42,9 @@ export function AppHeader({
   subtitle,
   showStatus = true,
   rightElement,
+  onBack,
+  greeting = false,
+  extended = false,
 }: AppHeaderProps) {
   const { auth, signOut, online, status } = useReader();
 
@@ -31,6 +52,7 @@ export function AppHeader({
   const companyName = subtitle || auth?.company?.name || 'Establecimiento Principal';
   const userName = auth?.userName || 'Operador';
   const userInitial = userName.charAt(0).toUpperCase();
+  const now = new Date();
 
   const handleProfilePress = () => {
     Alert.alert(
@@ -38,156 +60,127 @@ export function AppHeader({
       `Establecimiento: ${companyName}\nEstado: ${online ? 'Conectado a internet' : 'Modo fuera de línea'}`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Cerrar sesión',
-          style: 'destructive',
-          onPress: () => signOut(),
-        },
+        { text: 'Cerrar sesión', style: 'destructive', onPress: () => signOut() },
       ]
     );
   };
 
-  return (
-    <SafeAreaView edges={['top']} style={styles.safeContainer}>
-      <View style={styles.header}>
-        {/* Lado Izquierdo: Isotipo de Marca Oficial y Título */}
-        <View style={styles.leftSection}>
-          <View style={styles.logoBadge}>
-            <ErpLogo size={24} color="#FFFFFF" strokeWidth={3.2} />
-          </View>
-          <View style={styles.titleColumn}>
-            <Text style={styles.brandTitle} numberOfLines={1}>
-              {title}
-            </Text>
-            <Text style={styles.brandSubtitle} numberOfLines={1}>
-              {companyName}
-            </Text>
-          </View>
-        </View>
+  const leading = greeting ? null : onBack ? (
+    <IconButton icon={ArrowLeft} tone="glass" onPress={onBack} accessibilityLabel="Volver" />
+  ) : (
+    <View style={styles.logoBadge}>
+      <ErpLogo size={22} color={colors.onPrimary} strokeWidth={3.2} />
+    </View>
+  );
 
-        {/* Lado Derecho: Indicador de Bastón BLE y Avatar de Usuario */}
-        <View style={styles.rightSection}>
-          {rightElement ? (
-            rightElement
+  const trailing = rightElement ?? (
+    <>
+      {showStatus && (
+        <IconButton
+          icon={isBleConnected ? Bluetooth : BluetoothOff}
+          tone="glass"
+          size={38}
+          accessibilityLabel={isBleConnected ? 'Bastón conectado' : 'Bastón desconectado'}
+        />
+      )}
+      <TouchableOpacity
+        style={styles.avatarButton}
+        onPress={handleProfilePress}
+        activeOpacity={0.8}
+        accessibilityLabel="Perfil del operador"
+      >
+        <Text style={styles.avatarText}>{userInitial}</Text>
+      </TouchableOpacity>
+    </>
+  );
+
+  return (
+    <SafeAreaView edges={['top']} style={[styles.safeContainer, !extended && styles.rounded]}>
+      <View style={[styles.header, greeting && styles.headerGreeting]}>
+        {leading}
+
+        <View style={styles.titleColumn}>
+          {greeting ? (
+            <>
+              <Text style={styles.greetingText} numberOfLines={1}>
+                Hola, <Text style={styles.greetingStrong}>{greetingFor(now)}</Text>
+              </Text>
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {formatToday(now)} · {companyName}
+              </Text>
+            </>
           ) : (
             <>
-              {showStatus && (
-                <View style={styles.telemetryRow}>
-                  {/* Indicador de Bastón BLE */}
-                  <View
-                    style={[
-                      styles.telemetryBadge,
-                      isBleConnected ? styles.telemetryBleActive : styles.telemetryBleInactive,
-                    ]}
-                  >
-                    <Bluetooth
-                      size={14}
-                      color={isBleConnected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.45)'}
-                    />
-                  </View>
-                </View>
-              )}
-
-              {/* Botón de Perfil / Avatar del Operador */}
-              <TouchableOpacity
-                style={styles.avatarButton}
-                onPress={handleProfilePress}
-                activeOpacity={0.8}
-                accessibilityLabel="Perfil del operador"
-              >
-                <Text style={styles.avatarText}>{userInitial}</Text>
-              </TouchableOpacity>
+              <Text style={styles.title} numberOfLines={1}>
+                {title}
+              </Text>
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {companyName}
+              </Text>
             </>
           )}
         </View>
+
+        <View style={styles.rightSection}>{trailing}</View>
       </View>
     </SafeAreaView>
   );
 }
 
+/** Green continuation under an `extended` header, so the first card can sit half on it (design ref image.png). */
+export function HeaderBand({ height = 72 }: { height?: number }) {
+  return <View style={[styles.band, { height }]} pointerEvents="none" />;
+}
+
 const styles = StyleSheet.create({
-  safeContainer: {
-    backgroundColor: colors.primaryDark,
+  safeContainer: { backgroundColor: colors.primary },
+  rounded: {
+    borderBottomLeftRadius: radius.xl,
+    borderBottomRightRadius: radius.xl,
+    paddingBottom: 6,
   },
   header: {
-    height: 58,
+    minHeight: 64,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    backgroundColor: colors.primaryDark,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.08)',
+    gap: 12,
   },
-  leftSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    gap: 10,
-    marginRight: 8,
-  },
+  headerGreeting: { paddingTop: 8, paddingBottom: 4 },
   logoBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.onPrimaryGlass,
+    borderWidth: 1,
+    borderColor: colors.onPrimaryGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titleColumn: {
-    flex: 1,
-    gap: 1,
-  },
-  brandTitle: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.8,
-  },
-  brandSubtitle: {
-    fontSize: 11.5,
-    fontWeight: '500',
-    color: '#D1FAE5', // Soft Mint Emerald
-  },
-  rightSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  telemetryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  telemetryBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  telemetryBleActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.28)',
-  },
-  telemetryBleInactive: {
-    backgroundColor: 'rgba(0, 0, 0, 0.18)',
-  },
+  titleColumn: { flex: 1, gap: 2 },
+  title: { fontFamily: fonts.semibold, fontSize: 18, color: colors.onPrimary, letterSpacing: 0.3 },
+  greetingText: { fontFamily: fonts.regular, fontSize: 24, color: colors.onPrimary },
+  greetingStrong: { fontFamily: fonts.semibold },
+  subtitle: { fontFamily: fonts.regular, fontSize: 13, color: colors.onPrimaryMuted },
+  rightSection: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   avatarButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.surface,
+    borderWidth: 2,
+    borderColor: colors.onPrimaryGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
   },
-  avatarText: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: colors.primaryDark,
+  avatarText: { fontFamily: fonts.bold, fontSize: 16, color: colors.primary },
+  band: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.primary,
+    borderBottomLeftRadius: radius.xl,
+    borderBottomRightRadius: radius.xl,
   },
 });

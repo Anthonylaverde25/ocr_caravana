@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import {
-  KpiCategoryData,
-  OperationalKpis,
-} from '../../infrastructure/api/OperationalKpiApi';
+import { StyleSheet } from 'react-native';
+import { KpiCategoryData, OperationalKpis } from '../../infrastructure/api/OperationalKpiApi';
 import { FioriObjectCell } from './kpis/FioriObjectCell';
+import { Card } from './ui/Card';
 
 interface FioriPendingDocsListProps {
   kpis: OperationalKpis;
@@ -20,7 +18,7 @@ export function FioriPendingDocsList({ kpis, onSelectCategory }: FioriPendingDoc
   ].filter(Boolean);
 
   return (
-    <View style={styles.listContainer}>
+    <Card padding={0} style={styles.card}>
       {categoriesList.map((cat, index) => (
         <FioriObjectCell
           key={cat.key}
@@ -29,12 +27,10 @@ export function FioriPendingDocsList({ kpis, onSelectCategory }: FioriPendingDoc
           onPress={onSelectCategory}
         />
       ))}
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    width: '100%',
-  },
+  card: { paddingHorizontal: 14, overflow: 'hidden' },
 });

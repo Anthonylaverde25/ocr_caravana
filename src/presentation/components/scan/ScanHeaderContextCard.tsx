@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { ChevronDown, ChevronUp, FileText, Calendar, Tag, ShieldCheck } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 import { WorkTemplateContext, WorkTemplateCode } from '../../../core/work-templates/types';
 
 interface ScanHeaderContextCardProps {
@@ -72,7 +72,7 @@ export function ScanHeaderContextCard({
                 value={context.batch_name || context.lote || ''}
                 onChangeText={(val) => handleFieldChange('batch_name', val)}
                 placeholder="Nombre de lote"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={colors.subtle}
               />
             </View>
 
@@ -87,7 +87,7 @@ export function ScanHeaderContextCard({
                 value={context.entry_date || context.evaluation_date || ''}
                 onChangeText={(val) => handleFieldChange('entry_date', val)}
                 placeholder="AAAA-MM-DD"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={colors.subtle}
               />
             </View>
 
@@ -102,7 +102,7 @@ export function ScanHeaderContextCard({
                 value={context.guia_dte || ''}
                 onChangeText={(val) => handleFieldChange('guia_dte', val)}
                 placeholder="Ej. DTE-004812"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={colors.subtle}
               />
             </View>
 
@@ -118,7 +118,7 @@ export function ScanHeaderContextCard({
                   value={context.veterinarian_name || ''}
                   onChangeText={(val) => handleFieldChange('veterinarian_name', val)}
                   placeholder="Dr. Nombre y Apellido"
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={colors.subtle}
                 />
               </View>
             ) : (
@@ -132,7 +132,7 @@ export function ScanHeaderContextCard({
                   value={context.provider_cuit || ''}
                   onChangeText={(val) => handleFieldChange('provider_cuit', val)}
                   placeholder="30-..."
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={colors.subtle}
                 />
               </View>
             )}
@@ -145,8 +145,8 @@ export function ScanHeaderContextCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
     overflow: 'hidden',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 14,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.surfaceMuted,
   },
   headerLeft: {
     flex: 1,
@@ -174,27 +174,26 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   codeBadgeText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    fontFamily: fonts.semibold,
   },
   categoryBadge: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: colors.infoBg,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: colors.infoBg,
   },
   categoryBadgeText: {
-    color: '#1D4ED8',
+    color: colors.info,
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   templateTitle: {
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
     color: colors.text,
   },
   expandIconWrap: {
@@ -218,17 +217,17 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 11,
-    fontWeight: '600',
-    color: '#4B5563',
+    fontFamily: fonts.medium,
+    color: colors.textSecondary,
   },
   input: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.surfaceMuted,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 8,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    fontSize: 13,
+    fontFamily: fonts.regular, fontSize: 13,
     color: colors.text,
   },
 });

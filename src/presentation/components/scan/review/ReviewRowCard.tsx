@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Edit2, Trash2 } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import type { SheetModule, SheetRow } from '../../../../core/work-templates/sheet/types';
 import type { RowIssues } from '../../../scan/useSheetReview';
 import { ReviewIssueList } from './ReviewIssueList';
@@ -36,7 +36,7 @@ export function ReviewRowCard({ module, row, index, issues, skipped, locked, onE
         {!locked && (
           <>
             <TouchableOpacity onPress={onEdit} hitSlop={8} style={styles.icon}>
-              <Edit2 size={15} color="#4B5563" />
+              <Edit2 size={15} color={colors.textSecondary} />
             </TouchableOpacity>
             <TouchableOpacity onPress={onDelete} hitSlop={8} style={styles.icon}>
               <Trash2 size={15} color={colors.danger} />
@@ -60,19 +60,19 @@ export function ReviewRowCard({ module, row, index, issues, skipped, locked, onE
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: colors.surface, borderRadius: 12, padding: 12, gap: 8, borderWidth: 1, borderColor: colors.border },
-  cardError: { borderColor: '#FCA5A5' },
-  cardWarning: { borderColor: '#FCD34D' },
+  card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: 12, gap: 8, borderWidth: 1, borderColor: colors.border },
+  cardError: { borderColor: colors.danger },
+  cardWarning: { borderColor: colors.warning },
   top: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  index: { fontSize: 12, fontWeight: '700', color: colors.muted },
-  title: { flex: 1, fontSize: 15, fontWeight: '800', fontFamily: 'monospace', color: colors.text },
-  page: { fontSize: 11, color: colors.muted },
-  status: { fontSize: 11, fontWeight: '700', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, overflow: 'hidden' },
+  index: { fontSize: 12, fontFamily: fonts.semibold, color: colors.muted },
+  title: { flex: 1, fontSize: 15, fontFamily: fonts.semibold, fontVariant: ['tabular-nums'], color: colors.text },
+  page: { fontFamily: fonts.regular, fontSize: 11, color: colors.muted },
+  status: { fontSize: 11, fontFamily: fonts.semibold, paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.sm, overflow: 'hidden' },
   statusOk: { color: colors.primaryDark, backgroundColor: colors.primaryBg },
-  statusWarning: { color: '#92400E', backgroundColor: colors.warningBg },
-  statusError: { color: '#B91C1C', backgroundColor: colors.dangerBg },
+  statusWarning: { color: colors.warningText, backgroundColor: colors.warningBg },
+  statusError: { color: colors.danger, backgroundColor: colors.dangerBg },
   icon: { padding: 2 },
   details: { flexDirection: 'row', flexWrap: 'wrap', columnGap: 12, rowGap: 2 },
-  detail: { fontSize: 12, color: colors.text },
+  detail: { fontFamily: fonts.regular, fontSize: 12, color: colors.text },
   detailLabel: { color: colors.muted },
 });

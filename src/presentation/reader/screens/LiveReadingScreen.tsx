@@ -1,13 +1,19 @@
 import React from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
-import { ConnectionBadge } from '../components/ConnectionBadge';
+import { ClipboardCheck } from 'lucide-react-native';
+import { AppHeader } from '../../components/AppHeader';
+import { PillButton } from '../../components/ui/PillButton';
+import { StatsCard } from '../../components/ui/StatsCard';
+import { StatusPill } from '../../components/ui/StatusPill';
+import { ActionBar } from '../../components/ui/ActionBar';
+import { CONNECTION_LOOK, ConnectionBadge } from '../components/ConnectionBadge';
 import { DiscardedPanel } from '../components/DiscardedPanel';
 import { ReadingRow } from '../components/ReadingRow';
 import { useReader } from '../ReaderContext';
 import { ReaderStackParams } from '../ReaderTab';
-import { colors, common } from '../theme';
+import { colors, common, fonts } from '../theme';
 import * as S from '../../../core/entities/RegistrationSession';
 
 type Props = NativeStackScreenProps<ReaderStackParams, 'Live'>;
@@ -17,55 +23,75 @@ export function LiveReadingScreen({ navigation }: Props) {
   const { session, status, online, update } = useReader();
 
   if (!session) {
-    return <View style={[common.screen, common.content]}><Text style={common.muted}>No hay sesión abierta.</Text></View>;
+    return (
+      <View style={common.screen}>
+        <AppHeader title="Lectura en manga" onBack={() => navigation.goBack()} />
+        <Text style={[common.muted, styles.empty]}>No hay sesión abierta.</Text>
+      </View>
+    );
   }
 
   const total = session.readings.length;
   const reads = session.readings.reduce((sum, r) => sum + r.readCount, 0);
   const known = session.readings.filter((r) => ['own_company', 'other_company'].includes(session.lookup[r.eid])).length;
+  const look = CONNECTION_LOOK[status.state];
 
   const toReview = () => {
     update((s) => S.setStatus(s, 'review'));
     navigation.navigate('Review');
   };
 
+  const header = (
+    <View style={styles.listHeader}>
+      <StatsCard
+        eyebrow={session.header.categoryName ?? 'Alta de animales'}
+        value={total}
+        unit={total === 1 ? 'animal' : 'animales'}
+        stats={[
+          { label: 'lecturas', value: reads },
+          { label: 'ya registrados', value: known, alert: known > 0 },
+        ]}
+        footer={online ? `Destino: ${session.header.batchName}` : 'Sin sistema: las lecturas se guardan en el teléfono.'}
+        accessory={<StatusPill label={look.label} tone={look.tone} />}
+      />
+      {(status.state === 'reconnecting' || status.state === 'error') && (
+        <ConnectionBadge status={status} online={online} />
+      )}
+      <DiscardedPanel discarded={session.discarded} />
+      {total > 0 && <Text style={styles.sectionTitle}>Últimas lecturas</Text>}
+    </View>
+  );
+
   return (
     <View style={common.screen}>
-      <View style={[common.content, { paddingBottom: 0 }]}>
-        <ConnectionBadge status={status} online={online} />
-        <View style={[common.card, common.row, { justifyContent: 'space-around' }]}>
-          <Counter value={total} label="animales" />
-          <Counter value={reads} label="lecturas" />
-          <Counter value={known} label="ya registrados" color={known > 0 ? colors.warning : undefined} />
-        </View>
-        <Text style={common.muted}>{session.header.batchName}{session.header.categoryName ? ` · ${session.header.categoryName}` : ''}</Text>
-        <DiscardedPanel discarded={session.discarded} />
-      </View>
+      <AppHeader title="Lectura en manga" subtitle={session.header.batchName} onBack={() => navigation.goBack()} />
 
       <FlatList
         data={session.readings}
         keyExtractor={(r) => r.eid}
-        contentContainerStyle={{ padding: 16, gap: 8 }}
+        contentContainerStyle={styles.list}
+        ListHeaderComponent={header}
         renderItem={({ item, index }) => (
-          <ReadingRow reading={item} status={session.lookup[item.eid] ?? 'unchecked'} index={total - index} />
+          <ReadingRow
+            reading={item}
+            status={session.lookup[item.eid] ?? 'unchecked'}
+            index={total - index}
+            latest={index === 0}
+          />
         )}
-        ListEmptyComponent={<Text style={[common.muted, { textAlign: 'center', marginTop: 32 }]}>Esperando la primera lectura…</Text>}
+        ListEmptyComponent={<Text style={[common.muted, styles.empty]}>Esperando la primera lectura…</Text>}
       />
 
-      <View style={{ padding: 16 }}>
-        <TouchableOpacity style={[common.button, total === 0 && common.buttonDisabled]} disabled={total === 0} onPress={toReview}>
-          <Text style={common.buttonText}>Terminar lectura y revisar</Text>
-        </TouchableOpacity>
-      </View>
+      <ActionBar>
+        <PillButton label="Terminar lectura y revisar" icon={ClipboardCheck} disabled={total === 0} onPress={toReview} />
+      </ActionBar>
     </View>
   );
 }
 
-function Counter({ value, label, color }: { value: number; label: string; color?: string }) {
-  return (
-    <View style={{ alignItems: 'center' }}>
-      <Text style={{ fontSize: 28, fontWeight: '700', color: color ?? colors.text }}>{value}</Text>
-      <Text style={common.muted}>{label}</Text>
-    </View>
-  );
-}
+const styles = StyleSheet.create({
+  list: { padding: 16, gap: 8 },
+  listHeader: { gap: 12, marginBottom: 4 },
+  sectionTitle: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text, marginTop: 8 },
+  empty: { textAlign: 'center', marginTop: 32 },
+});

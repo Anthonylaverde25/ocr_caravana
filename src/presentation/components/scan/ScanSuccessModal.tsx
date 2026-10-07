@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, SafeAreaView } from 'react-native';
 import { CheckCircle, ArrowRight, RotateCcw } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 
 interface ScanSuccessModalProps {
   visible: boolean;
@@ -61,7 +61,7 @@ export function ScanSuccessModal({
                 onPress={onScanAnother}
                 activeOpacity={0.8}
               >
-                <RotateCcw size={18} color="#FFFFFF" />
+                <RotateCcw size={18} color={colors.surface} />
                 <Text style={styles.primaryBtnText}>Escanear Otra Planilla</Text>
               </TouchableOpacity>
 
@@ -84,7 +84,7 @@ export function ScanSuccessModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -94,12 +94,12 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
     padding: 24,
     alignItems: 'center',
     gap: 16,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 10,
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
+    fontFamily: fonts.semibold,
     color: colors.text,
   },
   subtitle: {
-    fontSize: 13,
+    fontFamily: fonts.regular, fontSize: 13,
     color: colors.muted,
     textAlign: 'center',
     lineHeight: 18,
@@ -127,10 +127,10 @@ const styles = StyleSheet.create({
   },
   statsBox: {
     flexDirection: 'row',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     paddingVertical: 14,
     width: '100%',
   },
@@ -142,17 +142,17 @@ const styles = StyleSheet.create({
   statDivider: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
   },
   statValue: {
     fontSize: 16,
-    fontWeight: '800',
+    fontFamily: fonts.semibold,
     color: colors.primaryDark,
   },
   statLabel: {
     fontSize: 11,
     color: colors.muted,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
     marginTop: 2,
   },
   actions: {
@@ -165,23 +165,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: radius.md,
     gap: 8,
   },
   primaryBtn: {
     backgroundColor: colors.primary,
   },
   primaryBtnText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   secondaryBtn: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.surfaceMuted,
   },
   secondaryBtnText: {
     color: colors.primaryDark,
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
 });

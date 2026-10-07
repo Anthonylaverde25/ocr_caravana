@@ -1,59 +1,40 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import {
   View,
-  TextInput,
+  Text,
   ScrollView,
   StyleSheet,
-  Alert,
-  Text,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, Tag } from 'lucide-react-native';
+import {
+  ClipboardList,
+  Truck,
+  ChevronRight,
+  House,
+  Bluetooth,
+  FileText,
+  List,
+} from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../reader/theme';
-import {
-  ALL_MENU_ITEMS,
-  MENU_CATEGORIES,
-  MenuItem,
-} from './menuCatalog';
 import { MenuHeader } from './MenuHeader';
-import { MenuQuickActions } from './MenuQuickActions';
-import { MenuCategorySection } from './MenuCategorySection';
-import { MenuModuleCard } from './MenuModuleCard';
 import { MenuFooter } from './MenuFooter';
 
 export function FullScreenNavMenuScreen() {
   const navigation = useNavigation<any>();
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return ALL_MENU_ITEMS;
-    const query = searchQuery.toLowerCase().trim();
-    return ALL_MENU_ITEMS.filter(
-      (item) =>
-        item.title.toLowerCase().includes(query) ||
-        item.description.toLowerCase().includes(query) ||
-        item.categoryLabel.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
-
-  const handleSelectModule = (item: MenuItem) => {
-    if (item.available && item.targetTab) {
-      navigation.navigate('MainTabs', { screen: item.targetTab });
-    } else {
-      Alert.alert(
-        item.title,
-        `${item.description}\n\nEste módulo está en fase de integración activa con el lector BLE y la balanza digital de manga.`,
-        [{ text: 'Entendido', style: 'default' }]
-      );
-    }
+  const handleGoToOperations = () => {
+    navigation.navigate('OperationsScreen');
   };
 
-  const handleSelectQuickTab = (tab: 'Home' | 'Lector' | 'Planillas' | 'Historial') => {
+  const handleGoToDte = () => {
+    navigation.navigate('DteScreen');
+  };
+
+  const handleSelectTab = (tab: 'Home' | 'Lector' | 'Planillas' | 'Historial') => {
     navigation.navigate('MainTabs', { screen: tab });
   };
-
-  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <View style={styles.root}>
@@ -61,81 +42,129 @@ export function FullScreenNavMenuScreen() {
         <MenuHeader onClose={() => navigation.goBack()} />
       </SafeAreaView>
 
-      <View style={styles.container}>
-        {/* Barra de Búsqueda de Módulos */}
-        <View style={styles.searchWrapper}>
-          <View style={styles.searchBox}>
-            <Search size={18} color="#9CA3AF" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar módulo, pesaje, tacto, sanidad..."
-              placeholderTextColor="#9CA3AF"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              clearButtonMode="while-editing"
-              returnKeyType="search"
-            />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.sectionHeading}>
+          <Text style={styles.sectionTitle}>MÓDULOS PRINCIPALES</Text>
+          <Text style={styles.sectionSubtitle}>
+            Selecciona la actividad o consulta a realizar en manga
+          </Text>
+        </View>
+
+        {/* Tarjeta 1: Operaciones */}
+        <TouchableOpacity
+          style={[styles.menuCard, styles.menuCardOperations]}
+          onPress={handleGoToOperations}
+          activeOpacity={0.8}
+        >
+          <View style={styles.cardHeaderRow}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#ECFDF5' }]}>
+              <ClipboardList size={26} color="#059669" strokeWidth={2.2} />
+            </View>
+            <View style={[styles.badgePill, { backgroundColor: '#ECFDF5', borderColor: '#A7F3D0' }]}>
+              <Text style={[styles.badgePillText, { color: '#047857' }]}>ACTIVIDADES DE CAMPO</Text>
+            </View>
+          </View>
+
+          <View style={styles.cardBody}>
+            <Text style={styles.cardTitle}>Operaciones</Text>
+            <Text style={styles.cardSubtitle}>Manga, Reproducción, Sanidad y Logística</Text>
+            <Text style={styles.cardDescription}>
+              Catálogo integral de pesadas periódicas, condición corporal, tacto, ecografía, registro de partos y planes de vacunación.
+            </Text>
+          </View>
+
+          <View style={styles.cardFooter}>
+            <Text style={[styles.footerActionText, { color: '#059669' }]}>
+              Ingresar al catálogo de operaciones
+            </Text>
+            <View style={[styles.chevronCircle, { backgroundColor: '#ECFDF5' }]}>
+              <ChevronRight size={16} color="#059669" />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Tarjeta 2: DTe / Recepciones */}
+        <TouchableOpacity
+          style={[styles.menuCard, styles.menuCardDte]}
+          onPress={handleGoToDte}
+          activeOpacity={0.8}
+        >
+          <View style={styles.cardHeaderRow}>
+            <View style={[styles.iconWrapper, { backgroundColor: '#F0F9FF' }]}>
+              <Truck size={26} color="#0284C7" strokeWidth={2.2} />
+            </View>
+            <View style={[styles.badgePill, { backgroundColor: '#F0F9FF', borderColor: '#BAE6FD' }]}>
+              <Text style={[styles.badgePillText, { color: '#0369A1' }]}>SENASA & GUÍAS</Text>
+            </View>
+          </View>
+
+          <View style={styles.cardBody}>
+            <Text style={styles.cardTitle}>DTe / Recepciones</Text>
+            <Text style={styles.cardSubtitle}>Control de Hacienda y Guías de Tránsito</Text>
+            <Text style={styles.cardDescription}>
+              Seguimiento de hacienda en tránsito, órdenes de compra externa, verificación de caravanas y recepción con DTE en manga.
+            </Text>
+          </View>
+
+          <View style={styles.cardFooter}>
+            <Text style={[styles.footerActionText, { color: '#0284C7' }]}>
+              Ver tropas y documentos de tránsito
+            </Text>
+            <View style={[styles.chevronCircle, { backgroundColor: '#F0F9FF' }]}>
+              <ChevronRight size={16} color="#0284C7" />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Accesos directos a Pestañas */}
+        <View style={styles.quickAccessSection}>
+          <Text style={styles.quickAccessHeading}>ACCESOS DIRECTOS</Text>
+          <View style={styles.quickTabsGrid}>
+            <TouchableOpacity
+              style={styles.quickTabBtn}
+              onPress={() => handleSelectTab('Home')}
+              activeOpacity={0.7}
+            >
+              <House size={18} color="#4B5563" />
+              <Text style={styles.quickTabBtnText}>Inicio</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.quickTabBtn}
+              onPress={() => handleSelectTab('Lector')}
+              activeOpacity={0.7}
+            >
+              <Bluetooth size={18} color="#059669" />
+              <Text style={styles.quickTabBtnText}>Lector BLE</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.quickTabBtn}
+              onPress={() => handleSelectTab('Planillas')}
+              activeOpacity={0.7}
+            >
+              <FileText size={18} color="#7C3AED" />
+              <Text style={styles.quickTabBtnText}>Planillas IA</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.quickTabBtn}
+              onPress={() => handleSelectTab('Historial')}
+              activeOpacity={0.7}
+            >
+              <List size={18} color="#2563EB" />
+              <Text style={styles.quickTabBtnText}>Historial</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          {isSearching ? (
-            <View style={styles.searchResultsContainer}>
-              <Text style={styles.searchHeading}>
-                RESULTADOS ({filteredItems.length})
-              </Text>
-
-              {filteredItems.length === 0 ? (
-                <View style={styles.emptyState}>
-                  <Tag size={36} color="#9CA3AF" />
-                  <Text style={styles.emptyTitle}>Sin módulos encontrados</Text>
-                  <Text style={styles.emptyText}>
-                    No hay operaciones coincidentes con "{searchQuery}".
-                  </Text>
-                </View>
-              ) : (
-                <View style={styles.searchGrid}>
-                  {filteredItems.map((item) => (
-                    <MenuModuleCard
-                      key={item.id}
-                      item={item}
-                      onPress={handleSelectModule}
-                    />
-                  ))}
-                </View>
-              )}
-            </View>
-          ) : (
-            <>
-              {/* Acciones Rápidas */}
-              <MenuQuickActions onSelectTab={handleSelectQuickTab} />
-
-              {/* Secciones por Categoría */}
-              {MENU_CATEGORIES.map((category) => {
-                const categoryItems = ALL_MENU_ITEMS.filter(
-                  (item) => item.category === category.key
-                );
-                return (
-                  <MenuCategorySection
-                    key={category.key}
-                    category={category}
-                    items={categoryItems}
-                    onSelectModule={handleSelectModule}
-                  />
-                );
-              })}
-            </>
-          )}
-
-          {/* Footer del Sistema */}
-          <MenuFooter onClose={() => navigation.goBack()} />
-        </ScrollView>
-      </View>
+        {/* Footer del Sistema */}
+        <MenuFooter onClose={() => navigation.goBack()} />
+      </ScrollView>
     </View>
   );
 }
@@ -152,63 +181,137 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  searchWrapper: {
-    backgroundColor: colors.primaryDark,
-    paddingHorizontal: 16,
-    paddingBottom: 14,
-  },
-  searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 42,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: '#1F2937',
-    paddingVertical: 0,
-  },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
-    paddingBottom: 24,
+    padding: 16,
+    gap: 16,
+    paddingBottom: 32,
   },
-  searchResultsContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
+  sectionHeading: {
+    paddingVertical: 4,
+    gap: 2,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#6B7280',
+    letterSpacing: 0.8,
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    color: '#4B5563',
+  },
+  menuCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1.5,
     gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
-  searchHeading: {
+  menuCardOperations: {
+    borderColor: '#E5E7EB',
+  },
+  menuCardDte: {
+    borderColor: '#E5E7EB',
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgePill: {
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  badgePillText: {
+    fontSize: 10.5,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  cardBody: {
+    gap: 4,
+  },
+  cardTitle: {
+    fontSize: 19,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  cardSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  cardDescription: {
+    fontSize: 12.5,
+    color: '#6B7280',
+    lineHeight: 18,
+    marginTop: 2,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  footerActionText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  chevronCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickAccessSection: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    gap: 10,
+  },
+  quickAccessHeading: {
     fontSize: 11,
     fontWeight: '800',
     color: '#6B7280',
     letterSpacing: 0.8,
   },
-  searchGrid: {
+  quickTabsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    rowGap: 12,
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 50,
     gap: 8,
   },
-  emptyTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#374151',
+  quickTabBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F9FAFB',
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    gap: 4,
   },
-  emptyText: {
-    fontSize: 13,
-    color: '#6B7280',
-    textAlign: 'center',
+  quickTabBtnText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#374151',
   },
 });

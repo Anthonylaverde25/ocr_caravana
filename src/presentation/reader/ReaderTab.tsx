@@ -7,7 +7,7 @@ import { LoginScreen } from './screens/LoginScreen';
 import { ReaderConnectScreen } from './screens/ReaderConnectScreen';
 import { ReviewScreen } from './screens/ReviewScreen';
 import { SessionHeaderScreen } from './screens/SessionHeaderScreen';
-import { colors, common } from './theme';
+import { common } from './theme';
 
 export type ReaderStackParams = {
   SessionHeader: undefined;
@@ -29,17 +29,12 @@ function ReaderNavigator() {
   }
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.primaryDark },
-        headerTintColor: '#FFFFFF',
-        headerTitleStyle: { fontWeight: '700' },
-      }}
-    >
-      <Stack.Screen name="SessionHeader" component={SessionHeaderScreen} options={{ title: 'Nueva sesión' }} />
-      <Stack.Screen name="Connect" component={ReaderConnectScreen} options={{ title: 'Lector' }} />
-      <Stack.Screen name="Live" component={LiveReadingScreen} options={{ title: 'Lectura en manga' }} />
-      <Stack.Screen name="Review" component={ReviewScreen} options={{ title: 'Revisión' }} />
+    // Each screen draws its own AppHeader, like the rest of the app.
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+      <Stack.Screen name="SessionHeader" component={SessionHeaderScreen} />
+      <Stack.Screen name="Connect" component={ReaderConnectScreen} />
+      <Stack.Screen name="Live" component={LiveReadingScreen} />
+      <Stack.Screen name="Review" component={ReviewScreen} />
     </Stack.Navigator>
   );
 }

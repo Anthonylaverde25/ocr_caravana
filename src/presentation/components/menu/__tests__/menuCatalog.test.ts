@@ -9,9 +9,7 @@ describe('menuCatalog', () => {
     const keys = MENU_CATEGORIES.map((c) => c.key);
     const uniqueKeys = new Set(keys);
     expect(uniqueKeys.size).toBe(keys.length);
-    expect(keys).toContain('MANGA');
-    expect(keys).toContain('REPRODUCCION');
-    expect(keys).toContain('SANIDAD');
+    expect(keys).toContain('OPERACIONES');
     expect(keys).toContain('LOGISTICA');
   });
 
@@ -19,6 +17,8 @@ describe('menuCatalog', () => {
     const ids = ALL_MENU_ITEMS.map((item) => item.id);
     const uniqueIds = new Set(ids);
     expect(uniqueIds.size).toBe(ids.length);
+    expect(ids).toContain('operaciones');
+    expect(ids).toContain('dte');
 
     const validCategoryKeys = new Set(MENU_CATEGORIES.map((c) => c.key));
     ALL_MENU_ITEMS.forEach((item) => {
@@ -29,13 +29,13 @@ describe('menuCatalog', () => {
     });
   });
 
-  it('available menu items define a valid targetTab', () => {
+  it('menu items define valid target routes for operations and dte', () => {
     const availableItems = ALL_MENU_ITEMS.filter((i) => i.available);
-    expect(availableItems.length).toBeGreaterThan(0);
+    expect(availableItems.length).toBe(2);
 
-    availableItems.forEach((item) => {
-      expect(['Home', 'Lector', 'Planillas', 'Historial']).toContain(item.targetTab);
-    });
+    const routes = availableItems.map((item) => item.targetRoute);
+    expect(routes).toContain('OperationsScreen');
+    expect(routes).toContain('DteScreen');
   });
 
   it('quick actions define valid target tabs and unique IDs', () => {

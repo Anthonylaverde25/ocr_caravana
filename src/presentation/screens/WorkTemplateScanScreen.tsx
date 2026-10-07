@@ -7,8 +7,9 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AppHeader } from '../components/AppHeader';
-import { colors } from '../reader/theme';
+import { AppHeader, HeaderBand } from '../components/AppHeader';
+import { SectionHeader } from '../components/ui/SectionHeader';
+import { colors, fonts } from '../reader/theme';
 import {
   WorkTemplateCode,
   WorkTemplateContext,
@@ -205,7 +206,7 @@ export function WorkTemplateScanScreen() {
   if (sheet.module) {
     return (
       <View style={styles.screenWrapper}>
-        <AppHeader title="ESCANER DE PLANILLAS" subtitle={`${sheet.module.code} · ${sheet.module.title}`} showStatus={false} />
+        <AppHeader title="Planillas" subtitle={`${sheet.module.code} · ${sheet.module.title}`} showStatus={false} />
         <SheetReview
           module={sheet.module}
           review={sheet.review}
@@ -226,17 +227,14 @@ export function WorkTemplateScanScreen() {
 
   return (
     <View style={styles.screenWrapper}>
-      <AppHeader
-        title="ESCANER DE PLANILLAS"
-        subtitle="Reconocimiento OCR + Inteligencia Artificial"
-        showStatus={false}
-      />
+      <AppHeader title="Planillas" subtitle="Escáner de planillas de campo con IA" showStatus={false} extended />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <HeaderBand />
         {/* Hero Card with Camera / Gallery / Simulation options */}
         <ScanHeroCard
           isProcessing={isProcessing}
@@ -269,10 +267,10 @@ export function WorkTemplateScanScreen() {
         {/* Extracted animals list */}
         {rows.length > 0 && (
           <View style={styles.rowsSection}>
-            <View style={styles.rowsHeader}>
-              <Text style={styles.sectionTitle}>ANIMALES DETECTADOS ({rows.length})</Text>
-              <Text style={styles.sectionHint}>Tocá para editar caravanas o datos</Text>
-            </View>
+            <SectionHeader
+              title={`Animales detectados (${rows.length})`}
+              meta={<Text style={styles.sectionHint}>Tocá una fila para editar la caravana o los datos.</Text>}
+            />
 
             <View style={styles.rowsList}>
               {rows.map((row, index) => (
@@ -339,26 +337,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   scrollContent: {
-    padding: 16,
-    gap: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    gap: 20,
     paddingBottom: 28,
   },
   rowsSection: {
     gap: 10,
   },
-  rowsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-  sectionTitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#6B7280',
-    letterSpacing: 0.6,
-  },
   sectionHint: {
-    fontSize: 11,
+    fontFamily: fonts.regular,
+    fontSize: 13,
     color: colors.muted,
   },
   rowsList: {

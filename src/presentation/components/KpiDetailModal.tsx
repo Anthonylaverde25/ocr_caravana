@@ -18,7 +18,7 @@ import {
   CheckCircle,
 } from 'lucide-react-native';
 import { KpiCategoryData } from '../../infrastructure/api/OperationalKpiApi';
-import { colors } from '../reader/theme';
+import { colors, fonts, radius } from '../reader/theme';
 import { KpiOrderItemCard } from './kpis/KpiOrderItemCard';
 
 interface KpiDetailModalProps {
@@ -74,7 +74,7 @@ export function KpiDetailModal({ visible, category, onClose }: KpiDetailModalPro
             </View>
 
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <X size={20} color="#4B5563" />
+              <X size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
@@ -129,15 +129,15 @@ export function KpiDetailModal({ visible, category, onClose }: KpiDetailModalPro
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
   },
   sheetContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '85%',
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingBottom: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: colors.surfaceMuted,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 44,
     height: 44,
-    borderRadius: 10,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#111827',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   templateBadge: {
     paddingHorizontal: 6,
@@ -183,28 +183,28 @@ const styles = StyleSheet.create({
   },
   templateBadgeText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   subtitle: {
-    fontSize: 12,
-    color: '#6B7280',
+    fontFamily: fonts.regular, fontSize: 12,
+    color: colors.muted,
     marginTop: 2,
   },
   closeButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F3F4F6',
+    borderRadius: radius.xl,
+    backgroundColor: colors.surfaceMuted,
     alignItems: 'center',
     justifyContent: 'center',
   },
   statsBar: {
     flexDirection: 'row',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.surfaceMuted,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: colors.border,
   },
   statBox: {
     flex: 1,
@@ -212,18 +212,18 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 18,
-    fontWeight: '800',
-    color: '#111827',
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   statLabel: {
     fontSize: 11,
-    color: '#6B7280',
+    color: colors.muted,
     marginTop: 2,
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
   statDivider: {
     width: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: colors.border,
   },
   scrollList: {
     maxHeight: 420,
@@ -240,31 +240,31 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#111827',
+    fontFamily: fonts.semibold,
+    color: colors.text,
     marginTop: 6,
   },
   emptyText: {
-    fontSize: 13,
-    color: '#6B7280',
+    fontFamily: fonts.regular, fontSize: 13,
+    color: colors.muted,
     textAlign: 'center',
     paddingHorizontal: 30,
   },
   footer: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
-    backgroundColor: '#FFFFFF',
+    borderTopColor: colors.surfaceMuted,
+    backgroundColor: colors.surface,
   },
   doneButton: {
-    backgroundColor: '#047857',
+    backgroundColor: colors.primary,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: radius.md,
     alignItems: 'center',
   },
   doneButtonText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
 });

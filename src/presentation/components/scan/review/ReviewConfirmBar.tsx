@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Plus, Save } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 
 interface ReviewConfirmBarProps {
   sentCount: number;
@@ -40,14 +40,14 @@ export function ReviewConfirmBar({ sentCount, errorCount, validating, current, s
         </View>
       </View>
       <TouchableOpacity style={styles.add} onPress={onAddRow} disabled={saving}>
-        <Plus size={16} color="#374151" />
+        <Plus size={16} color={colors.textSecondary} />
       </TouchableOpacity>
       <TouchableOpacity style={[styles.save, !canRegister && styles.saveDim]} onPress={onRegister} disabled={saving}>
         {saving ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
+          <ActivityIndicator size="small" color={colors.surface} />
         ) : (
           <>
-            <Save size={17} color="#FFFFFF" />
+            <Save size={17} color={colors.surface} />
             <Text style={styles.saveText}>Registrar</Text>
           </>
         )}
@@ -59,12 +59,12 @@ export function ReviewConfirmBar({ sentCount, errorCount, validating, current, s
 const styles = StyleSheet.create({
   bar: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border },
   info: { flex: 1, gap: 2 },
-  count: { fontSize: 15, fontWeight: '700', color: colors.text },
+  count: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  status: { fontSize: 12, color: colors.muted },
-  statusError: { color: colors.danger, fontWeight: '600' },
-  add: { borderWidth: 1, borderColor: colors.border, borderRadius: 10, padding: 11 },
-  save: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: colors.primary, borderRadius: 10, paddingHorizontal: 16, paddingVertical: 12 },
+  status: { fontFamily: fonts.regular, fontSize: 12, color: colors.muted },
+  statusError: { color: colors.danger, fontFamily: fonts.medium },
+  add: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: 11 },
+  save: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: colors.primary, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12 },
   saveDim: { opacity: 0.55 },
-  saveText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
+  saveText: { color: colors.surface, fontSize: 15, fontFamily: fonts.semibold },
 });

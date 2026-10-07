@@ -13,6 +13,7 @@ import {
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import { X, Zap, ZapOff, Settings, RefreshCw } from 'lucide-react-native';
 import { PickedImageResult } from '../../../infrastructure/camera/ImagePickerService';
+import { colors, fonts, radius } from '../../reader/theme';
 
 interface ScanCameraModalProps {
   visible: boolean;
@@ -77,11 +78,11 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
   return (
     <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#000000" />
+        <StatusBar barStyle="light-content" backgroundColor={colors.media} />
 
         {hasPermission === null ? (
           <View style={styles.permissionBox}>
-            <ActivityIndicator size="large" color="#059669" />
+            <ActivityIndicator size="large" color={colors.primary} />
             <Text style={styles.loadingText}>Comprobando permisos de cámara...</Text>
           </View>
         ) : hasPermission === false ? (
@@ -94,14 +95,14 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
               style={styles.openSettingsBtn}
               onPress={() => Linking.openSettings()}
             >
-              <Settings size={18} color="#FFFFFF" />
+              <Settings size={18} color={colors.surface} />
               <Text style={styles.openSettingsBtnText}>Abrir Ajustes del Teléfono</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.retryBtn}
               onPress={checkAndRequestPermission}
             >
-              <RefreshCw size={16} color="#059669" />
+              <RefreshCw size={16} color={colors.primary} />
               <Text style={styles.retryBtnText}>Reintentar Permiso</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeBtnSimple} onPress={onClose}>
@@ -132,7 +133,7 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
             <View style={styles.overlay}>
               <View style={styles.topBar}>
                 <TouchableOpacity style={styles.iconBtn} onPress={onClose}>
-                  <X size={26} color="#FFFFFF" />
+                  <X size={26} color={colors.surface} />
                 </TouchableOpacity>
 
                 <Text style={styles.guideTitle}>Encuadrar Planilla</Text>
@@ -142,9 +143,9 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
                   onPress={() => setFlash(flash === 'off' ? 'on' : 'off')}
                 >
                   {flash === 'on' ? (
-                    <Zap size={24} color="#FBBF24" />
+                    <Zap size={24} color={colors.warning} />
                   ) : (
-                    <ZapOff size={24} color="#FFFFFF" />
+                    <ZapOff size={24} color={colors.surface} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -165,7 +166,7 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
                   activeOpacity={0.7}
                 >
                   {isCapturing ? (
-                    <ActivityIndicator size="small" color="#059669" />
+                    <ActivityIndicator size="small" color={colors.primary} />
                   ) : (
                     <View style={styles.shutterInner} />
                   )}
@@ -182,7 +183,7 @@ export function ScanCameraModal({ visible, onCapture, onClose }: ScanCameraModal
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: colors.media,
   },
   permissionBox: {
     flex: 1,
@@ -193,63 +194,63 @@ const styles = StyleSheet.create({
   },
   permissionTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontFamily: fonts.semibold,
+    color: colors.surface,
     textAlign: 'center',
   },
   permissionSubtitle: {
-    fontSize: 14,
-    color: '#9CA3AF',
+    fontFamily: fonts.regular, fontSize: 14,
+    color: colors.subtle,
     textAlign: 'center',
     lineHeight: 20,
   },
   loadingText: {
-    fontSize: 14,
-    color: '#E5E7EB',
+    fontFamily: fonts.regular, fontSize: 14,
+    color: colors.border,
     marginTop: 12,
   },
   openSettingsBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: radius.md,
     gap: 8,
     marginTop: 8,
   },
   openSettingsBtnText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   retryBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.primaryBg,
     borderWidth: 1,
-    borderColor: '#A7F3D0',
+    borderColor: colors.emeraldBorder,
     paddingHorizontal: 18,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: radius.md,
     gap: 6,
   },
   retryBtnText: {
-    color: '#059669',
+    color: colors.primary,
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
   closeBtnSimple: {
-    backgroundColor: '#374151',
+    backgroundColor: colors.textSecondary,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: radius.md,
     marginTop: 6,
   },
   closeBtnText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
   overlay: {
     flex: 1,
@@ -261,17 +262,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 16,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: colors.mediaScrim,
     paddingBottom: 12,
   },
   iconBtn: {
     padding: 6,
   },
   guideTitle: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+    fontFamily: fonts.semibold,
   },
   framingContainer: {
     alignItems: 'center',
@@ -283,26 +283,26 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 0.72, // Proporción hoja A4 / oficio
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.75)',
-    borderRadius: 8,
+    borderColor: colors.onMediaBorder,
+    borderRadius: radius.md,
     borderStyle: 'dashed',
     backgroundColor: 'transparent',
   },
   framingHint: {
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: colors.onMedia,
     fontSize: 12,
-    fontWeight: '600',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    fontFamily: fonts.medium,
+    backgroundColor: colors.mediaScrim,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     overflow: 'hidden',
   },
   bottomBar: {
     height: 120,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: colors.mediaScrim,
     paddingBottom: 16,
   },
   shutterBtn: {
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     height: 74,
     borderRadius: 37,
     borderWidth: 4,
-    borderColor: '#FFFFFF',
+    borderColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -322,6 +322,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
   },
 });

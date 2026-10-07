@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AlertTriangle, XCircle } from 'lucide-react-native';
-import { colors } from '../../../reader/theme';
+import { colors, fonts, radius } from '../../../reader/theme';
 import type { ReviewIssue } from '../../../../core/work-templates/sheet/feedback';
 
 interface ReviewIssueListProps {
@@ -24,7 +24,7 @@ export function ReviewIssueList({ errors, warnings, compact = false }: ReviewIss
       ))}
       {warnings.map((issue, i) => (
         <View key={`w-${i}`} style={[styles.item, styles.warning]}>
-          <AlertTriangle size={13} color="#B45309" />
+          <AlertTriangle size={13} color={colors.warningText} />
           <Text style={[styles.text, styles.warningText]}>{issue.message}</Text>
         </View>
       ))}
@@ -35,10 +35,10 @@ export function ReviewIssueList({ errors, warnings, compact = false }: ReviewIss
 const styles = StyleSheet.create({
   list: { gap: 6 },
   compact: { gap: 4 },
-  item: { flexDirection: 'row', gap: 6, alignItems: 'flex-start', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
+  item: { flexDirection: 'row', gap: 6, alignItems: 'flex-start', borderRadius: radius.md, paddingHorizontal: 10, paddingVertical: 7 },
   error: { backgroundColor: colors.dangerBg },
   warning: { backgroundColor: colors.warningBg },
-  text: { flex: 1, fontSize: 12, lineHeight: 16 },
-  errorText: { color: '#B91C1C' },
-  warningText: { color: '#92400E' },
+  text: { flex: 1, fontFamily: fonts.regular, fontSize: 12, lineHeight: 16 },
+  errorText: { color: colors.danger },
+  warningText: { color: colors.warningText },
 });

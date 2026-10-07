@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Bluetooth, Wifi, WifiOff } from 'lucide-react-native';
+import { Bluetooth, BluetoothOff, Cloud, CloudOff } from 'lucide-react-native';
+import { colors, fonts } from '../../reader/theme';
 
 interface CompactTelemetryStripProps {
   online: boolean;
@@ -8,87 +9,49 @@ interface CompactTelemetryStripProps {
   profileDisplayName: string;
 }
 
-export function CompactTelemetryStrip({
-  online,
-  isConnected,
-  profileDisplayName,
-}: CompactTelemetryStripProps) {
+/** Server and wand state side by side, like the sunrise / sunset pair of design ref image.png. */
+export function CompactTelemetryStrip({ online, isConnected, profileDisplayName }: CompactTelemetryStripProps) {
+  const ServerIcon = online ? Cloud : CloudOff;
+  const BleIcon = isConnected ? Bluetooth : BluetoothOff;
+
   return (
     <View style={styles.container}>
-      {/* Estado del Servidor */}
-      <View style={styles.statusItem}>
-        <View style={[styles.dot, online ? styles.dotOnline : styles.dotOffline]} />
-        <Text style={[styles.statusText, online ? styles.textOnline : styles.textOffline]}>
-          {online ? 'Servidor activo' : 'Modo sin conexión'}
-        </Text>
+      <View style={styles.item}>
+        <ServerIcon size={18} color={online ? colors.primary : colors.warning} />
+        <View style={styles.textColumn}>
+          <Text style={styles.value}>{online ? 'En línea' : 'Sin conexión'}</Text>
+          <Text style={styles.caption}>Servidor</Text>
+        </View>
       </View>
 
-      <Text style={styles.divider}>•</Text>
+      <View style={styles.connector} />
 
-      {/* Estado del Lector BLE */}
-      <View style={styles.statusItem}>
-        <Bluetooth
-          size={13}
-          color={isConnected ? '#047857' : '#9CA3AF'}
-          strokeWidth={2.2}
-        />
-        <Text
-          style={[styles.statusText, isConnected ? styles.textBleConnected : styles.textBleDisconnected]}
-          numberOfLines={1}
-        >
-          {isConnected ? profileDisplayName : 'Sin bastón'}
-        </Text>
+      <View style={[styles.item, styles.itemEnd]}>
+        <View style={[styles.textColumn, styles.textEnd]}>
+          <Text style={styles.value} numberOfLines={1}>
+            {isConnected ? profileDisplayName : 'Sin bastón'}
+          </Text>
+          <Text style={styles.caption}>Lector BLE</Text>
+        </View>
+        <BleIcon size={18} color={isConnected ? colors.primary : colors.subtle} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: '#F9FAFB',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
-    gap: 8,
-  },
-  statusItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-  },
-  dotOnline: {
-    backgroundColor: '#059669',
-  },
-  dotOffline: {
-    backgroundColor: '#D97706',
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  textOnline: {
-    color: '#047857',
-  },
-  textOffline: {
-    color: '#B45309',
-  },
-  textBleConnected: {
-    color: '#047857',
-  },
-  textBleDisconnected: {
-    color: '#6B7280',
-  },
-  divider: {
-    fontSize: 12,
-    color: '#D1D5DB',
+  container: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  item: { flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 },
+  itemEnd: { justifyContent: 'flex-end' },
+  textColumn: { gap: 1, flexShrink: 1 },
+  textEnd: { alignItems: 'flex-end' },
+  value: { fontFamily: fonts.semibold, fontSize: 15, color: colors.text },
+  caption: { fontFamily: fonts.regular, fontSize: 12, color: colors.muted },
+  connector: {
+    flex: 1,
+    minWidth: 24,
+    borderTopWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: colors.border,
   },
 });

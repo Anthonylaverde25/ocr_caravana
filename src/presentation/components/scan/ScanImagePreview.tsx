@@ -10,7 +10,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { Maximize2, X, RefreshCw } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 
 interface ScanImagePreviewProps {
   imageUri: string;
@@ -24,7 +24,7 @@ export function ScanImagePreview({ imageUri, imageName, onRetake }: ScanImagePre
   return (
     <View style={styles.container}>
       <View style={styles.previewHeader}>
-        <Text style={styles.headerTitle}>HOJA CAPTURADA</Text>
+        <Text style={styles.headerTitle}>Hoja capturada</Text>
         <Text style={styles.headerSubtitle} numberOfLines={1}>
           {imageName || 'worksheet.jpg'}
         </Text>
@@ -39,7 +39,7 @@ export function ScanImagePreview({ imageUri, imageName, onRetake }: ScanImagePre
             onPress={() => setIsFullscreen(true)}
             activeOpacity={0.8}
           >
-            <Maximize2 size={16} color="#FFFFFF" />
+            <Maximize2 size={16} color={colors.surface} />
             <Text style={styles.overlayBtnText}>Ver Completa</Text>
           </TouchableOpacity>
 
@@ -48,7 +48,7 @@ export function ScanImagePreview({ imageUri, imageName, onRetake }: ScanImagePre
             onPress={onRetake}
             activeOpacity={0.8}
           >
-            <RefreshCw size={15} color="#FFFFFF" />
+            <RefreshCw size={15} color={colors.surface} />
             <Text style={styles.overlayBtnText}>Cambiar</Text>
           </TouchableOpacity>
         </View>
@@ -62,14 +62,14 @@ export function ScanImagePreview({ imageUri, imageName, onRetake }: ScanImagePre
         onRequestClose={() => setIsFullscreen(false)}
       >
         <SafeAreaView style={styles.fullscreenContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#000000" />
+          <StatusBar barStyle="light-content" backgroundColor={colors.media} />
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{imageName || 'Planilla Capturada'}</Text>
             <TouchableOpacity
               style={styles.closeBtn}
               onPress={() => setIsFullscreen(false)}
             >
-              <X size={24} color="#FFFFFF" />
+              <X size={24} color={colors.surface} />
             </TouchableOpacity>
           </View>
 
@@ -88,8 +88,8 @@ export function ScanImagePreview({ imageUri, imageName, onRetake }: ScanImagePre
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     padding: 12,
     borderWidth: 1,
     borderColor: colors.border,
@@ -101,22 +101,21 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
   },
   headerTitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#6B7280',
-    letterSpacing: 0.5,
+    fontSize: 15,
+    fontFamily: fonts.semibold,
+    color: colors.text,
   },
   headerSubtitle: {
-    fontSize: 12,
+    fontFamily: fonts.regular, fontSize: 12,
     color: colors.muted,
     maxWidth: '60%',
   },
   thumbnailContainer: {
     height: 120,
-    borderRadius: 8,
+    borderRadius: radius.md,
     overflow: 'hidden',
     position: 'relative',
-    backgroundColor: '#111827',
+    backgroundColor: colors.text,
   },
   thumbnail: {
     width: '100%',
@@ -134,23 +133,23 @@ const styles = StyleSheet.create({
   overlayBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: colors.mediaScrim,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 6,
+    borderRadius: radius.sm,
     gap: 6,
   },
   retakeBtn: {
-    backgroundColor: 'rgba(5, 150, 105, 0.85)',
+    backgroundColor: colors.primaryScrim,
   },
   overlayBtnText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
   fullscreenContainer: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: colors.media,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -159,12 +158,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#262626',
+    borderBottomColor: colors.mediaDivider,
   },
   modalTitle: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: fonts.medium,
   },
   closeBtn: {
     padding: 4,

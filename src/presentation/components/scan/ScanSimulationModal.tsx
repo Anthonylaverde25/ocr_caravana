@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { X, Sparkles, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react-native';
-import { colors } from '../../reader/theme';
+import { colors, fonts, radius } from '../../reader/theme';
 import {
   AVAILABLE_SIMULATIONS,
   getSimulationPreset,
@@ -47,7 +47,7 @@ export function ScanSimulationModal({
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View style={styles.headerTitleWrap}>
-            <Sparkles size={20} color="#7C3AED" />
+            <Sparkles size={20} color={colors.info} />
             <Text style={styles.title}>Simulación de Planillas</Text>
           </View>
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
@@ -87,9 +87,9 @@ export function ScanSimulationModal({
                       ]}
                     >
                       {isWarning ? (
-                        <AlertTriangle size={11} color="#B45309" />
+                        <AlertTriangle size={11} color={colors.warningText} />
                       ) : (
-                        <CheckCircle size={11} color="#047857" />
+                        <CheckCircle size={11} color={colors.primary} />
                       )}
                       <Text
                         style={[
@@ -119,7 +119,7 @@ export function ScanSimulationModal({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
   },
   header: {
     flexDirection: 'row',
@@ -137,21 +137,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
     color: colors.text,
   },
   closeBtn: {
     padding: 4,
   },
   instructions: {
-    fontSize: 13,
+    fontFamily: fonts.regular, fontSize: 13,
     color: colors.muted,
     paddingHorizontal: 20,
     paddingVertical: 12,
     lineHeight: 18,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: colors.surfaceMuted,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: colors.border,
   },
   list: {
     padding: 16,
@@ -161,12 +161,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 12,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
     padding: 14,
-    shadowColor: '#000',
+    shadowColor: colors.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.04,
     shadowRadius: 2,
@@ -182,15 +182,15 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   codeBadge: {
-    backgroundColor: '#374151',
+    backgroundColor: colors.textSecondary,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
   },
   codeBadgeText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: fonts.semibold,
   },
   scenarioBadge: {
     flexDirection: 'row',
@@ -201,28 +201,28 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   scenarioHappy: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.primaryBg,
   },
   scenarioWarning: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningBg,
   },
   scenarioText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
   },
   scenarioTextHappy: {
-    color: '#047857',
+    color: colors.primary,
   },
   scenarioTextWarning: {
-    color: '#B45309',
+    color: colors.warningText,
   },
   cardTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontFamily: fonts.semibold,
     color: colors.text,
   },
   cardDescription: {
-    fontSize: 12,
+    fontFamily: fonts.regular, fontSize: 12,
     color: colors.muted,
   },
 });
