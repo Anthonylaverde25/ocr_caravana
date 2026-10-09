@@ -206,7 +206,7 @@ export function WorkTemplateScanScreen() {
   if (sheet.module) {
     return (
       <View style={styles.screenWrapper}>
-        <AppHeader title="Planillas" subtitle={`${sheet.module.code} · ${sheet.module.title}`} showStatus={false} />
+        <AppHeader title="Planillas" subtitle={`${sheet.module.code} · ${sheet.module.title}`} />
         <SheetReview
           module={sheet.module}
           review={sheet.review}
@@ -227,7 +227,7 @@ export function WorkTemplateScanScreen() {
 
   return (
     <View style={styles.screenWrapper}>
-      <AppHeader title="Planillas" subtitle="Escáner de planillas de campo con IA" showStatus={false} extended />
+      <AppHeader title="Planillas" subtitle="Escáner de planillas de campo con IA" extended />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}

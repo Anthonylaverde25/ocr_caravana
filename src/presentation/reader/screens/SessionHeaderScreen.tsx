@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { ChevronRight, Play } from 'lucide-react-native';
+import { Bluetooth, Play } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Sex } from '../../../core/entities/RegistrationSession';
 import { errorMessage } from '../../../infrastructure/api/ApiClient';
@@ -26,7 +26,7 @@ const TEETH = [0, 2, 4, 6, 8].map((n) => ({ value: n, label: n === 0 ? 'Leche' :
  * If a session was left half done it is offered first, so nothing read is lost.
  */
 export function SessionHeaderScreen({ navigation }: Props) {
-  const { auth, session, startSession, closeSession, selectCompany } = useReader();
+  const { auth, session, startSession, closeSession, selectCompany, status } = useReader();
   const [batches, setBatches] = useState<BatchOption[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [breeds, setBreeds] = useState<BreedOption[]>([]);
@@ -58,7 +58,7 @@ export function SessionHeaderScreen({ navigation }: Props) {
   if (session) {
     return (
       <View style={common.screen}>
-        <AppHeader title="Alta de animales" />
+        <AppHeader title="Alta de animales" onBack={() => navigation.goBack()} />
         <View style={common.content}>
           <Card style={styles.resumeCard}>
             <View style={styles.resumeTop}>
@@ -73,7 +73,7 @@ export function SessionHeaderScreen({ navigation }: Props) {
             <PillButton
               label="Retomar"
               icon={Play}
-              onPress={() => navigation.navigate(session.status === 'open' ? 'Connect' : 'Review')}
+              onPress={() => navigation.navigate(session.status === 'open' ? 'Live' : 'Review')}
             />
             <PillButton
               label="Descartar y empezar otra"
@@ -90,6 +90,7 @@ export function SessionHeaderScreen({ navigation }: Props) {
   }
 
   const batch = batches.find((b) => b.id === batchId);
+  const connected = status.state === 'connected';
   const canStart = batch !== undefined && /^\d{4}-\d{2}-\d{2}$/.test(entryDate);
 
   const start = () => {
@@ -105,12 +106,12 @@ export function SessionHeaderScreen({ navigation }: Props) {
       entryDate,
       defaultTeeth: teeth,
     });
-    navigation.navigate('Connect');
+    navigation.navigate('Live');
   };
 
   return (
     <View style={common.screen}>
-      <AppHeader title="Alta de animales" />
+      <AppHeader title="Alta de animales" onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.intro}>
@@ -152,7 +153,23 @@ export function SessionHeaderScreen({ navigation }: Props) {
       </ScrollView>
 
       <ActionBar>
-        <PillButton label="Continuar: conectar el lector" icon={ChevronRight} disabled={!canStart} onPress={start} />
+        {/* Without the wand no caravan can be read, so the session does not start; Connect opens
+            on top and comes back to this form as it was left. */}
+        {connected ? (
+          <PillButton label="Comenzar la lectura" icon={Play} disabled={!canStart} onPress={start} />
+        ) : (
+          <>
+            <Text style={[common.muted, styles.center]}>
+              {status.state === 'reconnecting' ? 'Reconectando el bastón…' : 'Conectá el bastón para comenzar la lectura.'}
+            </Text>
+            <PillButton
+              label="Conectar el bastón"
+              icon={Bluetooth}
+              disabled={status.state === 'reconnecting'}
+              onPress={() => navigation.navigate('Connect')}
+            />
+          </>
+        )}
       </ActionBar>
     </View>
   );
@@ -162,6 +179,7 @@ const styles = StyleSheet.create({
   content: { padding: 16, gap: 14 },
   intro: { gap: 4, marginBottom: 2 },
   spaced: { marginTop: 6 },
+  center: { textAlign: 'center' },
   error: { fontFamily: fonts.regular, fontSize: 14, color: colors.danger },
   resumeCard: { gap: 12 },
   resumeTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },

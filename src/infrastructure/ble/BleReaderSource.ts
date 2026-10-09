@@ -2,10 +2,10 @@ import { decode } from 'base-64';
 import { BleError, BleErrorCode, BleManager, Device, State, Subscription } from 'react-native-ble-plx';
 import { ReaderProfile } from '../../core/readers/ReaderProfile';
 import { DiscoveredReader, ReaderSource, ReaderStatus, Unsubscribe } from '../../core/readers/ReaderSource';
+import { attemptAfterLoss, reconnectDelayMs } from '../../core/readers/ReconnectPolicy';
 import { requestBluetoothPermissions } from './bluetoothPermissions';
 
 const CONNECT_TIMEOUT_MS = 10_000;
-const BACKOFF_MS = [1_000, 2_000, 4_000, 8_000, 15_000];
 const POWER_ON_TIMEOUT_MS = 5_000;
 
 /**
@@ -33,6 +33,9 @@ export class BleReaderSource implements ReaderSource {
   private generation = 0;
   /** A single recovery at a time; a second one would cancel the link the first just made. */
   private recovering = false;
+  /** Last reconnection attempt and when the link came up, so a link that keeps dropping backs off. */
+  private attempt = 0;
+  private connectedAt = 0;
 
   async scan(profile: ReaderProfile, onFound: (reader: DiscoveredReader) => void): Promise<Unsubscribe> {
     await this.ensureReady();
@@ -59,10 +62,17 @@ export class BleReaderSource implements ReaderSource {
     await this.manager.stopDeviceScan();
     this.userDisconnected = false;
     this.recovering = false;
+    this.attempt = 0;
     this.clearReconnect();
     this.target = { id: readerId, name: profile.advertisedName, profile };
     this.emit({ state: 'connecting', deviceName: this.target.name });
-    await this.establish();
+    try {
+      await this.establish();
+    } catch (error) {
+      // Left as "connecting" the UI would wait forever for a link that is not coming.
+      this.emit({ state: 'error', message: error instanceof Error ? error.message : String(error) });
+      throw error;
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -103,9 +113,18 @@ export class BleReaderSource implements ReaderSource {
     await device.discoverAllServicesAndCharacteristics();
     if (stale()) return;
 
+    // A link is not a reader: without the profile's characteristic no caravan can arrive, and
+    // subscribing would fail at once and look like a loss right after "connected".
+    if (!(await hasCharacteristic(device, target.profile))) {
+      await this.manager.cancelDeviceConnection(target.id).catch(() => undefined);
+      throw new Error(`El lector no ofrece el servicio del perfil "${target.profile.displayName}"`);
+    }
+    if (stale()) return;
+
     this.target = { ...target, name: device.localName ?? device.name ?? target.name };
     this.watch(device, target.profile, generation);
     this.recovering = false;
+    this.connectedAt = Date.now();
     this.emit({ state: 'connected', deviceName: this.target.name });
   }
 
@@ -144,15 +163,16 @@ export class BleReaderSource implements ReaderSource {
     this.generation++;
     this.teardownSubscriptions();
     void this.manager.cancelDeviceConnection(this.target.id).catch(() => undefined);
-    this.scheduleReconnect(1, reason);
+    this.scheduleReconnect(attemptAfterLoss(this.attempt, Date.now() - this.connectedAt), reason);
   }
 
   private scheduleReconnect(attempt: number, reason: string): void {
     const target = this.target;
     if (!target || this.userDisconnected) return;
 
+    this.attempt = attempt;
     this.emit({ state: 'reconnecting', deviceName: target.name, attempt, reason });
-    const delay = BACKOFF_MS[Math.min(attempt - 1, BACKOFF_MS.length - 1)];
+    const delay = reconnectDelayMs(attempt);
 
     this.reconnectTimer = setTimeout(async () => {
       this.reconnectTimer = null;
@@ -212,6 +232,17 @@ export class BleReaderSource implements ReaderSource {
 
   private emit(status: ReaderStatus): void {
     this.statusListeners.forEach((l) => l(status));
+  }
+}
+
+async function hasCharacteristic(device: Device, profile: ReaderProfile): Promise<boolean> {
+  try {
+    const characteristics = await device.characteristicsForService(profile.serviceUuid);
+    const wanted = profile.notifyCharacteristicUuid.toLowerCase();
+    return characteristics.some((c) => c.uuid.toLowerCase() === wanted);
+  } catch {
+    // ble-plx rejects when the service itself is missing.
+    return false;
   }
 }
 

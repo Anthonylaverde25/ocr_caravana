@@ -17,12 +17,18 @@ import { QuickActionsGrid } from '../components/home/QuickActionsGrid';
 import { Card } from '../components/ui/Card';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { StatusPill } from '../components/ui/StatusPill';
-import { MangaSessionHero } from '../components/home/MangaSessionHero';
+import { HerdHero } from '../components/home/HerdHero';
+import { MangaSessionCard } from '../components/home/MangaSessionCard';
+import { HerdSummaryApi, HerdSummaryResult } from '../../infrastructure/api/HerdSummaryApi';
 import { ShiftBufferSummary } from '../components/home/ShiftBufferSummary';
 
 export function HomeScreen() {
   const navigation = useNavigation<any>();
-  const { online, status, profile, session } = useReader();
+  const { auth, online, status, profile, session } = useReader();
+  const companyId = auth?.company.id;
+
+  const [herd, setHerd] = useState<HerdSummaryResult>({ summary: null, fromCache: false });
+  const [loadingHerd, setLoadingHerd] = useState<boolean>(true);
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const [pendingCount, setPendingCount] = useState<number>(0);
@@ -53,22 +59,32 @@ export function HomeScreen() {
       // Manejo con fallback silencioso a caché local
     } finally {
       setLoadingKpis(false);
-      setRefreshing(false);
     }
   }, []);
 
+  const loadHerd = useCallback(async () => {
+    if (companyId === undefined) return;
+    setLoadingHerd(true);
+    setHerd(await HerdSummaryApi.get(companyId));
+    setLoadingHerd(false);
+  }, [companyId]);
+
+  const loadAll = useCallback(async () => {
+    refreshStats();
+    await Promise.all([loadKpis(), loadHerd()]);
+    setRefreshing(false);
+  }, [refreshStats, loadKpis, loadHerd]);
+
   useFocusEffect(
     useCallback(() => {
-      refreshStats();
-      loadKpis();
-    }, [refreshStats, loadKpis])
+      void loadAll();
+    }, [loadAll])
   );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refreshStats();
-    loadKpis();
-  }, [refreshStats, loadKpis]);
+    void loadAll();
+  }, [loadAll]);
 
   const handleOpenCategoryDetail = (category: KpiCategoryData) => {
     setSelectedCategory(category);
@@ -89,7 +105,7 @@ export function HomeScreen() {
 
   return (
     <View style={styles.screenWrapper}>
-      <AppHeader greeting extended showStatus />
+      <AppHeader greeting extended />
 
       <ScrollView
         contentContainerStyle={styles.container}
@@ -105,12 +121,24 @@ export function HomeScreen() {
       >
         <HeaderBand />
 
-        <MangaSessionHero
+        <HerdHero
+          summary={herd.summary}
+          loading={loadingHerd}
+          fromCache={herd.fromCache}
+          companyName={auth?.company.name ?? 'tu establecimiento'}
+        />
+
+        <MangaSessionCard
           session={session}
           online={online}
           isConnected={isConnected}
           profileDisplayName={profile.displayName}
-          onOpenReader={() => navigation.navigate('Lector')}
+          onOpenReader={() =>
+            // Without a session the reader flow starts by connecting the wand, unless it already is.
+            session
+              ? navigation.navigate('Lector')
+              : navigation.navigate('Lector', { screen: isConnected ? 'SessionHeader' : 'Connect' })
+          }
         />
 
         <QuickActionsGrid onNavigate={(route) => navigation.navigate(route)} />

@@ -40,10 +40,11 @@ cd tools/reader-simulator
 
 ## 4. Recorrido en la app
 
-1. Pestaña **Lector** → iniciar sesión.
-2. **Nueva sesión**: lote destino (obligatorio), categoría, raza, sexo de la tropa, dentición por defecto y fecha de ingreso. Todo animal leído hereda estos datos.
-3. **Lector**: elegir *Lector Bluetooth* y el mismo perfil que usa el simulador → *Buscar lectores* → *Conectar*. Con *Simulado en la app* se prueba sin Bluetooth.
+1. Pestaña **Lector** (o *Conectar lector* en Inicio): el primer paso es conectar el bastón.
+2. **Lector**: elegir *Lector Bluetooth* y el mismo perfil que usa el simulador → *Buscar lectores* → *Conectar*. Con *Simulado en la app* se prueba sin Bluetooth.
+3. **Nueva sesión**: lote destino (obligatorio), categoría, raza, sexo de la tropa, dentición por defecto y fecha de ingreso. Todo animal leído hereda estos datos. Si quedó una sesión sin terminar, acá se retoma o se descarta.
 4. **Lectura en manga**: las caravanas aparecen en vivo y se verifican contra el sistema cada 4 segundos. Una caravana leída varias veces cuenta como un solo animal.
+   Si el bastón se corta, la lectura queda **en pausa**: lo leído ya está guardado en el teléfono y la app intenta reconectar sola. Si no lo logra, *Reconectar el bastón* abre la conexión y, al conectar, vuelve a la misma lectura. Sin bastón conectado no se puede comenzar una sesión nueva.
 5. **Revisión**: sólo las **Nuevas** se dan de alta. *Ya registrada* y *De otra empresa* quedan excluidas. Por animal se corrige el sexo, la dentición y el peso, o se quita la lectura.
 6. **Dar de alta**: si el teléfono pierde la señal durante el envío, la sesión se bloquea y sólo permite *Reintentar envío*, que no duplica el alta.
 

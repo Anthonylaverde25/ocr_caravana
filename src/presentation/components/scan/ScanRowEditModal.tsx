@@ -93,10 +93,10 @@ export function ScanRowEditModal({
               style={styles.input}
               value={caravana}
               onChangeText={setCaravana}
-              placeholder="Ej. 085401928374615"
+              placeholder="Ej. 085401928374615 o AB-1234"
               placeholderTextColor={colors.subtle}
-              keyboardType="numeric"
-              autoCapitalize="none"
+              autoCapitalize="characters"
+              autoCorrect={false}
             />
           </View>
 

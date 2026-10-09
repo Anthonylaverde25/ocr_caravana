@@ -8,8 +8,9 @@ import { PillButton } from '../../components/ui/PillButton';
 import { StatsCard } from '../../components/ui/StatsCard';
 import { StatusPill } from '../../components/ui/StatusPill';
 import { ActionBar } from '../../components/ui/ActionBar';
-import { CONNECTION_LOOK, ConnectionBadge } from '../components/ConnectionBadge';
+import { CONNECTION_LOOK } from '../components/ConnectionBadge';
 import { DiscardedPanel } from '../components/DiscardedPanel';
+import { ReadingPausedBanner } from '../components/ReadingPausedBanner';
 import { ReadingRow } from '../components/ReadingRow';
 import { useReader } from '../ReaderContext';
 import { ReaderStackParams } from '../ReaderTab';
@@ -54,9 +55,8 @@ export function LiveReadingScreen({ navigation }: Props) {
         footer={online ? `Destino: ${session.header.batchName}` : 'Sin sistema: las lecturas se guardan en el teléfono.'}
         accessory={<StatusPill label={look.label} tone={look.tone} />}
       />
-      {(status.state === 'reconnecting' || status.state === 'error') && (
-        <ConnectionBadge status={status} online={online} />
-      )}
+      {/* Connect opens on top of this screen and comes back here once the wand is connected again. */}
+      <ReadingPausedBanner status={status} savedCount={total} onReconnect={() => navigation.navigate('Connect')} />
       <DiscardedPanel discarded={session.discarded} />
       {total > 0 && <Text style={styles.sectionTitle}>Últimas lecturas</Text>}
     </View>

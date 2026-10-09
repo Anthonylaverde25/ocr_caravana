@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import threading
+import time
 import logging
 
 from bless import (  # type: ignore
@@ -77,6 +78,30 @@ class SimulatedReader:
         while not await self._server.is_connected():
             await asyncio.sleep(0.25)
         log.info("Teléfono suscripto.")
+
+    async def log_subscription_changes(self) -> None:
+        """Logs every time the phone drops and comes back, which wait_for_subscriber only sees once.
+
+        A phone that keeps reconnecting looks fine from here otherwise: the first subscription is
+        logged and nothing after it.
+        """
+        assert self._server is not None
+        connected = await self._server.is_connected()
+        ever_connected = connected
+        since = time.monotonic()
+        while True:
+            await asyncio.sleep(0.25)
+            now = await self._server.is_connected()
+            if now == connected:
+                continue
+            held = time.monotonic() - since
+            if not now:
+                log.warning("Teléfono desuscripto tras %.1f s conectado.", held)
+            elif ever_connected:
+                log.info("Teléfono suscripto otra vez (estuvo %.1f s sin suscripción).", held)
+            # The first subscription is already logged by wait_for_subscriber.
+            ever_connected = ever_connected or now
+            connected, since = now, time.monotonic()
 
     async def send_line(self, text: str) -> None:
         payload = (text + self.profile.line_terminator).encode("ascii", errors="replace")

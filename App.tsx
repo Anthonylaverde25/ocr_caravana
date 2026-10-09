@@ -11,6 +11,7 @@ import { LoginScreen } from './src/presentation/reader/screens/LoginScreen';
 import { ReaderTab } from './src/presentation/reader/ReaderTab';
 import { HomeScreen } from './src/presentation/screens/HomeScreen';
 import { OperationsScreen } from './src/presentation/screens/OperationsScreen';
+import { CaravanLookupScreen } from './src/presentation/screens/CaravanLookupScreen';
 import { DteScreen } from './src/presentation/screens/DteScreen';
 import { ReceiveWithCaravansScreen } from './src/presentation/screens/ReceiveWithCaravansScreen';
 import { HistoryScreen } from './src/presentation/screens/HistoryScreen';
@@ -119,6 +120,13 @@ function AppNavigation() {
       <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="MainTabs" component={MainTabs} />
+        <RootStack.Screen
+          name="CaravanLookup"
+          component={CaravanLookupScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
         <RootStack.Screen
           name="OperationsScreen"
           component={OperationsScreen}

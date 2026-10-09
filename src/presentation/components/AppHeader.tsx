@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Bluetooth, BluetoothOff } from 'lucide-react-native';
+import { ArrowLeft } from 'lucide-react-native';
 import { useReader } from '../reader/ReaderContext';
 import { colors, fonts, radius } from '../reader/theme';
 import { ErpLogo } from './ErpLogo';
 import { IconButton } from './ui/IconButton';
+import { ReaderStatusButton } from './ReaderStatusButton';
 
 export interface AppHeaderProps {
   title?: string;
   subtitle?: string;
-  showStatus?: boolean;
   rightElement?: React.ReactNode;
   onBack?: () => void;
   /** "Hola, Buen día" + date instead of the title (Home). */
@@ -40,15 +40,13 @@ function greetingFor(now: Date): string {
 export function AppHeader({
   title = 'GANADERO',
   subtitle,
-  showStatus = true,
   rightElement,
   onBack,
   greeting = false,
   extended = false,
 }: AppHeaderProps) {
-  const { auth, signOut, online, status } = useReader();
+  const { auth, signOut, online } = useReader();
 
-  const isBleConnected = status.state === 'connected';
   const companyName = subtitle || auth?.company?.name || 'Establecimiento Principal';
   const userName = auth?.userName || 'Operador';
   const userInitial = userName.charAt(0).toUpperCase();
@@ -75,14 +73,8 @@ export function AppHeader({
 
   const trailing = rightElement ?? (
     <>
-      {showStatus && (
-        <IconButton
-          icon={isBleConnected ? Bluetooth : BluetoothOff}
-          tone="glass"
-          size={38}
-          accessibilityLabel={isBleConnected ? 'Bastón conectado' : 'Bastón desconectado'}
-        />
-      )}
+      {/* Always shown: the wand's link matters on every screen, not only while reading. */}
+      <ReaderStatusButton />
       <TouchableOpacity
         style={styles.avatarButton}
         onPress={handleProfilePress}

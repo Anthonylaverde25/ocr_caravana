@@ -44,6 +44,12 @@ interface ReaderContextValue {
   online: boolean;
   verify(): Promise<void>;
   submit(): Promise<SubmitFeedback>;
+
+  /**
+   * Routes every tag read to `listener` instead of the registration session, until the returned
+   * function is called. Looking an animal up must not add it to the troop being registered.
+   */
+  claimReadings(listener: (eid: string) => void): () => void;
 }
 
 const ReaderContext = createContext<ReaderContextValue | null>(null);
@@ -63,6 +69,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [online, setOnline] = useState(true);
   const sessionRef = useRef<S.RegistrationSession | null>(null);
   const verifying = useRef(false);
+  const claim = useRef<((eid: string) => void) | null>(null);
 
   // The BLE manager is only created when BLE is actually chosen.
   const sources = useRef<Partial<Record<SourceKind, ReaderSource>>>({});
@@ -104,6 +111,15 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     const offChunk = source.onChunk((chunk) => {
       for (const line of assembler.push(chunk)) {
         const parsed = parser.parse(line);
+        const claimed = claim.current;
+        if (claimed) {
+          // A bad read while looking up is just not answered; it is not the session's to keep.
+          if (parsed.ok) {
+            Vibration.vibrate(80);
+            claimed(parsed.eid);
+          }
+          continue;
+        }
         if (!parsed.ok) {
           update((s) => S.recordDiscarded(s, parsed.raw, parsed.reason, new Date()));
           continue;
@@ -215,11 +231,18 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     if (company) await signIn({ ...auth, company });
   }, [auth, signIn]);
 
+  const claimReadings = useCallback((listener: (eid: string) => void) => {
+    claim.current = listener;
+    return () => {
+      if (claim.current === listener) claim.current = null;
+    };
+  }, []);
+
   const value: ReaderContextValue = {
     auth, signIn, signOut, selectCompany,
     profile, setProfile, sourceKind, setSourceKind, source, status,
     session, startSession, closeSession, update,
-    online, verify, submit,
+    online, verify, submit, claimReadings,
   };
 
   return <ReaderContext.Provider value={value}>{children}</ReaderContext.Provider>;

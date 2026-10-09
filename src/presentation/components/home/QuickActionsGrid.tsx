@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Bluetooth, FileText, LayoutGrid, Truck, LucideIcon } from 'lucide-react-native';
+import { Bluetooth, FileText, LayoutGrid, List, ScanSearch, Truck, LucideIcon } from 'lucide-react-native';
 import { colors, fonts, radius, shadow } from '../../reader/theme';
 
 interface QuickAction {
@@ -12,13 +12,15 @@ interface QuickAction {
 }
 
 const ACTIONS: QuickAction[] = [
+  { key: 'lookup', label: 'Consultar', icon: ScanSearch, route: 'CaravanLookup' },
   { key: 'reader', label: 'Lector', icon: Bluetooth, route: 'Lector' },
   { key: 'sheets', label: 'Planillas', icon: FileText, route: 'Planillas', badge: 'IA' },
   { key: 'operations', label: 'Operaciones', icon: LayoutGrid, route: 'OperationsScreen' },
   { key: 'dte', label: 'DTe', icon: Truck, route: 'DteScreen' },
+  { key: 'history', label: 'Historial', icon: List, route: 'Historial' },
 ];
 
-/** Four-tile shortcut row (design ref image.png, "Invest by Category"). */
+/** Shortcut tiles, three per row (design ref image.png, "Invest by Category"). */
 export function QuickActionsGrid({ onNavigate }: { onNavigate: (route: string) => void }) {
   return (
     <View style={styles.row}>
@@ -49,9 +51,11 @@ export function QuickActionsGrid({ onNavigate }: { onNavigate: (route: string) =
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: 10 },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   tile: {
-    flex: 1,
+    // Three per row: (100% - two 10px gaps) / 3.
+    width: '31.5%',
+    flexGrow: 1,
     alignItems: 'center',
     gap: 8,
     paddingVertical: 14,

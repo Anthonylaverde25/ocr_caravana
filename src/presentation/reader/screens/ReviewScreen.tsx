@@ -97,7 +97,7 @@ export function ReviewScreen({ navigation }: Props) {
 
       <ActionBar>
         {done ? (
-          <PillButton label="Nueva sesión" icon={Plus} onPress={() => { closeSession(); navigation.popToTop(); }} />
+          <PillButton label="Nueva sesión" icon={Plus} onPress={() => { closeSession(); navigation.popTo('SessionHeader'); }} />
         ) : (
           <>
             {!online && <Text style={[common.muted, styles.center]}>Sin conexión con el sistema</Text>}

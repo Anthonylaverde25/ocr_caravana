@@ -74,6 +74,7 @@ Flujo del lector: `ReaderSource.onChunk` → `LineAssembler` (arma líneas a par
 5. **Un animal = un EID.** Leer de nuevo una caravana que ya está en la sesión sólo incrementa `readCount`.
 6. **Sólo se dan de alta las `not_found`.** `own_company` (ya registrada) y `other_company` se muestran pero quedan excluidas.
 7. **Nuevas fuentes de lectura** (p. ej. Bluetooth Classic/SPP) implementan `ReaderSource`; nada aguas abajo debería cambiar.
+8. **Consultar no es dar de alta.** La pantalla *Consultar caravana* toma el bastón con `claimReadings` mientras está enfocada: lo que se lee ahí abre la ficha del animal (`/caravans/lookup` → `GET /caravans/{id}`) y nunca entra en la sesión de alta.
 
 ## Convenciones
 

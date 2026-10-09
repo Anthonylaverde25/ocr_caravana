@@ -63,6 +63,7 @@ async def run(args: argparse.Namespace) -> None:
     reader = SimulatedReader(profile)
     await reader.start()
     sent = 0
+    watcher = asyncio.create_task(reader.log_subscription_changes())
     try:
         await reader.wait_for_subscriber()
         async for event in events:
@@ -82,6 +83,7 @@ async def run(args: argparse.Namespace) -> None:
         logging.info("Escenario terminado: %d lecturas enviadas. Ctrl+C para cortar.", sent)
         await asyncio.Event().wait()
     finally:
+        watcher.cancel()
         await reader.stop()
 
 

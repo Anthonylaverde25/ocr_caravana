@@ -119,7 +119,11 @@ export const common = StyleSheet.create({
   chipTextActive: { color: colors.onPrimary },
 });
 
-/** 032000000100007 → "032 0000 0010 0007": grouped so it can be read aloud at the chute. */
+/**
+ * 032000000100007 → "032 0000 0010 0007": grouped so it can be read aloud at the chute. Visual
+ * caravans may carry letters and any length; they are shown as written.
+ */
 export function formatEid(eid: string): string {
+  if (!/^\d{15}$/.test(eid)) return eid;
   return `${eid.slice(0, 3)} ${eid.slice(3, 7)} ${eid.slice(7, 11)} ${eid.slice(11)}`;
 }

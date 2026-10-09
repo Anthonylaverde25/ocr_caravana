@@ -10,8 +10,8 @@ import { SessionHeaderScreen } from './screens/SessionHeaderScreen';
 import { common } from './theme';
 
 export type ReaderStackParams = {
-  SessionHeader: undefined;
   Connect: undefined;
+  SessionHeader: undefined;
   Live: undefined;
   Review: undefined;
 };
@@ -29,10 +29,11 @@ function ReaderNavigator() {
   }
 
   return (
+    // The wand is connected first, so the troop data is only filled in once readings can arrive.
     // Each screen draws its own AppHeader, like the rest of the app.
-    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
-      <Stack.Screen name="SessionHeader" component={SessionHeaderScreen} />
+    <Stack.Navigator initialRouteName="Connect" screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Connect" component={ReaderConnectScreen} />
+      <Stack.Screen name="SessionHeader" component={SessionHeaderScreen} />
       <Stack.Screen name="Live" component={LiveReadingScreen} />
       <Stack.Screen name="Review" component={ReviewScreen} />
     </Stack.Navigator>

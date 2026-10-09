@@ -85,7 +85,6 @@ export function DteScreen() {
       <AppHeader
         title="DTe / Recepciones"
         subtitle="Control de hacienda SENASA"
-        showStatus={false}
         extended
         onBack={() => navigation.goBack()}
       />

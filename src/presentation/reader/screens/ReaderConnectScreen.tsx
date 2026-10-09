@@ -16,7 +16,7 @@ import { colors, common, fonts, radius } from '../theme';
 type Props = NativeStackScreenProps<ReaderStackParams, 'Connect'>;
 
 export function ReaderConnectScreen({ navigation }: Props) {
-  const { profile, setProfile, sourceKind, setSourceKind, source, status, online } = useReader();
+  const { profile, setProfile, sourceKind, setSourceKind, source, status, online, session } = useReader();
   const [found, setFound] = useState<DiscoveredReader[]>([]);
   const [error, setError] = useState<string | null>(null);
   const stopScan = useRef<Unsubscribe | null>(null);
@@ -24,6 +24,24 @@ export function ReaderConnectScreen({ navigation }: Props) {
   useEffect(() => () => stopScan.current?.(), []);
 
   const connected = status.state === 'connected';
+  const reading = session?.status === 'open';
+
+  /**
+   * Where the flow goes once the wand is connected. Connect may sit on top of a screen that sent
+   * the operator here to reconnect; going back to it (popTo) keeps that screen as it was, the
+   * troop form half filled or the live list. A session left open goes straight back to reading.
+   */
+  const continueFlow = () => {
+    const inStack = navigation.getState().routes.map((r) => r.name);
+    if (reading) {
+      if (inStack.includes('Live')) navigation.popTo('Live');
+      else navigation.reset({ index: 2, routes: [{ name: 'Connect' }, { name: 'SessionHeader' }, { name: 'Live' }] });
+    } else if (inStack.includes('SessionHeader')) {
+      navigation.popTo('SessionHeader');
+    } else {
+      navigation.navigate('SessionHeader');
+    }
+  };
 
   const scan = async () => {
     stopScan.current?.();
@@ -41,7 +59,7 @@ export function ReaderConnectScreen({ navigation }: Props) {
     setError(null);
     try {
       await source.connect(reader.id, profile);
-      navigation.navigate('Live');
+      continueFlow();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
@@ -49,7 +67,11 @@ export function ReaderConnectScreen({ navigation }: Props) {
 
   return (
     <View style={common.screen}>
-      <AppHeader title="Lector" subtitle={profile.displayName} onBack={() => navigation.goBack()} />
+      <AppHeader
+        title="Lector"
+        subtitle={profile.displayName}
+        onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+      />
 
       <ScrollView contentContainerStyle={styles.content}>
         <Card style={styles.statusCard}>
@@ -66,7 +88,11 @@ export function ReaderConnectScreen({ navigation }: Props) {
 
         {connected ? (
           <View style={styles.actions}>
-            <PillButton label="Ir a la lectura" icon={ChevronRight} onPress={() => navigation.navigate('Live')} />
+            <PillButton
+              label={reading ? 'Volver a la lectura' : session ? 'Retomar la sesión' : 'Continuar: datos de la tropa'}
+              icon={ChevronRight}
+              onPress={continueFlow}
+            />
             <PillButton label="Desconectar lector" icon={Unplug} variant="soft" onPress={() => source.disconnect()} />
           </View>
         ) : (

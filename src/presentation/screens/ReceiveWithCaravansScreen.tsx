@@ -53,7 +53,6 @@ export function ReceiveWithCaravansScreen() {
       <AppHeader
         title={identifying ? 'Cargar caravanas' : 'Recibir y registrar'}
         subtitle={`DTe ${dte.dte_number} · ${order.code}`}
-        showStatus
         onBack={() => navigation.goBack()}
       />
 

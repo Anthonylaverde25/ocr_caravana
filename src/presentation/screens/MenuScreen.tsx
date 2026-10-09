@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { ClipboardList, Truck, ChevronRight, LucideIcon } from 'lucide-react-native';
+import { ClipboardList, Truck, ChevronRight, ScanSearch, LucideIcon } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, radius, shadow } from '../reader/theme';
 import { AppHeader } from '../components/AppHeader';
@@ -18,6 +18,15 @@ interface MenuModule {
 }
 
 const MODULES: MenuModule[] = [
+  {
+    route: 'CaravanLookup',
+    icon: ScanSearch,
+    tag: 'Bastón o número',
+    title: 'Consultar caravana',
+    subtitle: 'Ficha del animal en la manga',
+    description: 'Leé una caravana y mirá categoría, lote, peso, estado reproductivo, linaje y últimos movimientos.',
+    action: 'Abrir la consulta',
+  },
   {
     route: 'OperationsScreen',
     icon: ClipboardList,
